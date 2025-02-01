@@ -1,5 +1,4 @@
 #include "../include/sort_algorithms.h"
-#include <stdio.h>
 
 void swap(ushort *a, ushort *b) {
 	ushort temp = *a;
