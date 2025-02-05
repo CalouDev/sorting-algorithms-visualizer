@@ -1,25 +1,67 @@
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL.h>
-#include <pthread.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
 #include "../include/sorting_algorithms.h"
+#include "../include/utils.h"
 
 
 /*
 
-   compile with gcc src/main.c src/sorting_algorithms.c -o bin/app -I include -L lib -lmingw30 -lSDL3 
+   gcc src/main.c src/sorting_algorithms.c src/utils.c -o bin/app -I include -L lib -lmingw32 -lSDL3 -mwindows
+
+*/
+
+/*
+
+        Slow sorting algos
 
 */
 
 #define WIN_W 1280
 #define WIN_H 640
+#define INTERVALLE 1000 // ms
+#define ARR_SIZE 127
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 
-ushort arr[10] = {4, 8, 3, 5, 10, 7, 2, 9, 1, 6};
+Ushort arr[ARR_SIZE];
+
+Uint64 lastTime;
+
+void (*sortingFunctions[2])(Ushort[], Ushort) = {sortInsertion, sortSelection};
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
+        srand(time(NULL));
+
+        // Filling the array
+
+        for (Ushort i = 1; i <= ARR_SIZE; ++i)
+                arr[i-1] = i;
+
+        shuffle(arr, ARR_SIZE);
+
+        // MENU
+
+
+        /*SDL_Log("Use ./app -l or ./app --list to get the index of each sorting algorithms");
+
+        if (argc > 1) {
+                if (strcmp(argv[1], "-l") == 0 || strcmp(argv[1], "--list") == 0) {
+                        SDL_Log("Menu d'affichage");
+                        return SDL_APP_SUCCESS;
+                } else {
+                        Uint8 indexSortingAlgorithms = atoi(argv[1]);
+                        SDL_Log("Vous avez choisi l'algorithme numÃ©ro %d", indexSortingAlgorithms);
+                }
+        } else
+                SDL_Log("Running : Insertion Sort (default)");*/
+
+        // SDL Initialize
+
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("Error initializing SDL: %s", SDL_GetError());
         return SDL_APP_FAILURE;
@@ -37,7 +79,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
     if (!renderer) {
         SDL_Log("Error creating renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
-    }	
+    }
+
+        lastTime = SDL_GetTicks();
 
     return SDL_APP_CONTINUE;
 }
@@ -54,24 +98,28 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
     if (event->type == SDL_EVENT_QUIT) {
         return SDL_APP_SUCCESS;
     } else if (event->type == SDL_EVENT_KEY_DOWN) {
-		if (event->key.scancode == SDL_SCANCODE_SPACE) {
-			sortInsertion(arr, 10);
-		}
-	}
+                if (event->key.scancode == SDL_SCANCODE_SPACE) {
+                        sortInsertion(arr, ARR_SIZE);
+                }
+        }
     return SDL_APP_CONTINUE;
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate) {
-	SDL_SetRenderDrawColor(renderer, 100, 100, 100, SDL_ALPHA_OPAQUE);
-	SDL_RenderClear(renderer);
+        SDL_SetRenderDrawColor(renderer, 10, 10, 10, SDL_ALPHA_OPAQUE);
+        SDL_RenderClear(renderer);
 
-	SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
-	
-	for (int i = 0; i < 10; ++i) {
-		SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - arr[i] * 60);
-	}
+        SDL_SetRenderDrawColor(renderer, 200, 200, 200, SDL_ALPHA_OPAQUE);
 
-	SDL_RenderPresent(renderer);
+        for (Ushort i = 0; i < ARR_SIZE; ++i) {
+                SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - arr[i] * 5);
+        }
 
-	return SDL_APP_CONTINUE;
+        if (SDL_GetTicks() > lastTime + INTERVALLE) {
+                lastTime = SDL_GetTicks();
+        }
+
+        SDL_RenderPresent(renderer);
+
+        return SDL_APP_CONTINUE;
 }
