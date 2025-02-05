@@ -3,7 +3,7 @@
 
 typedef unsigned short Ushort;
 
-void sortInsertion(Ushort arr[], Ushort size);
+void sortInsertion(Ushort arr[], Ushort size, Ushort index);
 void sortSelection(Ushort arr[], Ushort size);
 
 #endif
