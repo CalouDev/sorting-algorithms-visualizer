@@ -16,13 +16,13 @@
 
 /*
 
-        Slow sorting algos
+	Slow sorting algos	
 
 */
 
 #define WIN_W 1280
 #define WIN_H 640
-#define INTERVALLE 1000 // ms
+#define INTERVALLE 100 // ms
 #define ARR_SIZE 127
 
 static SDL_Window *window = NULL;
@@ -32,36 +32,39 @@ Ushort arr[ARR_SIZE];
 
 Uint64 lastTime;
 
-void (*sortingFunctions[2])(Ushort[], Ushort) = {sortInsertion, sortSelection};
+void (*sortingFunctions[2])(Ushort[], Ushort, Ushort) = {sortInsertion, sortInsertion};
+
+bool sorting = false;
+Ushort indexInsertion = 1;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
-        srand(time(NULL));
+	srand(time(NULL));
 
-        // Filling the array
+	// Filling the array
+	
+	for (Ushort i = 1; i <= ARR_SIZE; ++i)
+		arr[i-1] = i;
 
-        for (Ushort i = 1; i <= ARR_SIZE; ++i)
-                arr[i-1] = i;
+	shuffle(arr, ARR_SIZE);
 
-        shuffle(arr, ARR_SIZE);
+	// MENU 
+	
 
-        // MENU
+	/*SDL_Log("Use ./app -l or ./app --list to get the index of each sorting algorithms");
+	
+	if (argc > 1) {
+		if (strcmp(argv[1], "-l") == 0 || strcmp(argv[1], "--list") == 0) {
+			SDL_Log("Menu d'affichage");
+			return SDL_APP_SUCCESS;
+		} else {
+			Uint8 indexSortingAlgorithms = atoi(argv[1]);
+			SDL_Log("Vous avez choisi l'algorithme numéro %d", indexSortingAlgorithms);
+		}
+	} else
+		SDL_Log("Running : Insertion Sort (default)");*/
 
-
-        /*SDL_Log("Use ./app -l or ./app --list to get the index of each sorting algorithms");
-
-        if (argc > 1) {
-                if (strcmp(argv[1], "-l") == 0 || strcmp(argv[1], "--list") == 0) {
-                        SDL_Log("Menu d'affichage");
-                        return SDL_APP_SUCCESS;
-                } else {
-                        Uint8 indexSortingAlgorithms = atoi(argv[1]);
-                        SDL_Log("Vous avez choisi l'algorithme numÃ©ro %d", indexSortingAlgorithms);
-                }
-        } else
-                SDL_Log("Running : Insertion Sort (default)");*/
-
-        // SDL Initialize
-
+	// SDL Initialize
+	
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("Error initializing SDL: %s", SDL_GetError());
         return SDL_APP_FAILURE;
@@ -81,7 +84,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
         return SDL_APP_FAILURE;
     }
 
-        lastTime = SDL_GetTicks();
+	lastTime = SDL_GetTicks();
 
     return SDL_APP_CONTINUE;
 }
@@ -98,28 +101,33 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
     if (event->type == SDL_EVENT_QUIT) {
         return SDL_APP_SUCCESS;
     } else if (event->type == SDL_EVENT_KEY_DOWN) {
-                if (event->key.scancode == SDL_SCANCODE_SPACE) {
-                        sortInsertion(arr, ARR_SIZE);
-                }
-        }
+		if (event->key.scancode == SDL_SCANCODE_SPACE) {
+			sorting = true;
+			lastTime = SDL_GetTicks();
+
+		}
+	}
     return SDL_APP_CONTINUE;
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate) {
-        SDL_SetRenderDrawColor(renderer, 10, 10, 10, SDL_ALPHA_OPAQUE);
-        SDL_RenderClear(renderer);
+	SDL_SetRenderDrawColor(renderer, 10, 10, 10, SDL_ALPHA_OPAQUE);
+	SDL_RenderClear(renderer);
 
-        SDL_SetRenderDrawColor(renderer, 200, 200, 200, SDL_ALPHA_OPAQUE);
+	SDL_SetRenderDrawColor(renderer, 200, 200, 200, SDL_ALPHA_OPAQUE);
+	
+	for (Ushort i = 0; i < ARR_SIZE; ++i) {
+		SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - arr[i] * 5);
+	}
 
-        for (Ushort i = 0; i < ARR_SIZE; ++i) {
-                SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - arr[i] * 5);
-        }
+	if (sorting && SDL_GetTicks() > lastTime + INTERVALLE) {
+		lastTime = SDL_GetTicks();
+		sortingFunctions[0](arr, ARR_SIZE, indexInsertion);
+		indexInsertion++;
+		if (indexInsertion >= ARR_SIZE) sorting = false;
+	}
 
-        if (SDL_GetTicks() > lastTime + INTERVALLE) {
-                lastTime = SDL_GetTicks();
-        }
+	SDL_RenderPresent(renderer);
 
-        SDL_RenderPresent(renderer);
-
-        return SDL_APP_CONTINUE;
+	return SDL_APP_CONTINUE;
 }
