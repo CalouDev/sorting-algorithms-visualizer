@@ -41,7 +41,10 @@ void (*sortingFunctions[N_ALGOS])(Ushort[], Ushort, Ushort) = {sortInsertion, so
 
 Button buttons[N_ALGOS];
 SDL_MouseButtonFlags mouseData;
+
 float mouseX, mouseY;
+SDL_Cursor *handCursor, *defaultCursor;
+bool elementHovered = false;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	srand(time(NULL));
@@ -79,6 +82,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
         return SDL_APP_FAILURE;
     }
 
+	handCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
+	defaultCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
+
 	lastTime = SDL_GetTicks();
 
 	for (int i = 0; i < N_ALGOS; ++i) {
@@ -103,8 +109,12 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 		case SDL_EVENT_QUIT:
 			return SDL_APP_SUCCESS;
 		case SDL_EVENT_MOUSE_MOTION:
-			for (int i = 0; i < N_ALGOS; ++i)
-				buttons[i].hovered = isHovered(buttons[i].box, event->motion.x, event->motion.y);
+			elementHovered = false;
+			for (int i = 0; i < N_ALGOS; ++i) {
+				buttons[i].hovered = isHovered(buttons[i].box, event->motion.x, event->motion.y); 
+				if (buttons[i].hovered) elementHovered = true;
+			}
+
 			break;
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 			if (event->button.button == SDL_BUTTON_LEFT) {
@@ -150,6 +160,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
 	for (int i = 0; i < N_ALGOS; ++i)
 		renderButton(renderer, &buttons[i]);
+
+	if (elementHovered) SDL_SetCursor(handCursor);
+	else SDL_SetCursor(defaultCursor);
 
 	SDL_RenderPresent(renderer);
 
