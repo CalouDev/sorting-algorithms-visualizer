@@ -31,7 +31,10 @@ void (*sortingFunctions[2])(Ushort[], Ushort, Ushort) = {sortInsertion, sortSele
 
 bool sorting = false;
 Ushort indexSorting;
+
 Button monBouton;
+SDL_MouseButtonFlags mouseData;
+float mouseX, mouseY;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	srand(time(NULL));
@@ -42,22 +45,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 		arr[i-1] = i;
 
 	shuffle(arr, ARR_SIZE);
-
-	// MENU 
-
-
-	/*SDL_Log("Use ./app -l or ./app --list to get the index of each sorting algorithms");
-
-	if (argc > 1) {
-		if (strcmp(argv[1], "-l") == 0 || strcmp(argv[1], "--list") == 0) {
-			SDL_Log("Menu d'affichage");
-			return SDL_APP_SUCCESS;
-		} else {
-			Uint8 indexSortingAlgorithms = atoi(argv[1]);
-			SDL_Log("Vous avez choisi l'algorithme numéro %d", indexSortingAlgorithms);
-		}
-	} else
-		SDL_Log("Running : Insertion Sort (default)");*/
 
 	// SDL Initialize
 	
@@ -103,20 +90,30 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
 }
 
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
-    if (event->type == SDL_EVENT_QUIT) {
-        return SDL_APP_SUCCESS;
-    } else if (event->type == SDL_EVENT_KEY_DOWN) {
-		if (event->key.scancode == SDL_SCANCODE_SPACE) {
-			indexSorting = 0;
-			sorting = true;
-			lastTime = SDL_GetTicks();
-
-		}
+	switch (event->type) {
+		case SDL_EVENT_QUIT:
+			return SDL_APP_SUCCESS;
+		case SDL_EVENT_MOUSE_MOTION:
+			monBouton.hovered = isHovered(monBouton.box, event->motion.x, event->motion.y);
+			break;
+		case SDL_EVENT_KEY_DOWN:
+			switch (event->key.scancode)
+				case SDL_SCANCODE_SPACE:
+					indexSorting = 0;
+					sorting = true;
+					lastTime = SDL_GetTicks();
+					break;
+			break;
+		default:
+			break;
 	}
+
     return SDL_APP_CONTINUE;
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate) {
+	mouseData = SDL_GetMouseState(&mouseX, &mouseY);	
+
 	SDL_SetRenderDrawColor(renderer, 10, 10, 10, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
 
