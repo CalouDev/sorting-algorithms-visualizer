@@ -31,6 +31,7 @@ void (*sortingFunctions[2])(Ushort[], Ushort, Ushort) = {sortInsertion, sortSele
 
 bool sorting = false;
 Ushort indexSorting;
+Button monBouton;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	srand(time(NULL));
@@ -86,6 +87,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 
 	lastTime = SDL_GetTicks();
 
+	monBouton = createButton(1050, 10, 200, 50);
+
     return SDL_APP_CONTINUE;
 }
 
@@ -114,7 +117,6 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate) {
-	Button* monBouton = createButton(1050, 10, 200, 50);
 	SDL_SetRenderDrawColor(renderer, 10, 10, 10, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
 
@@ -131,11 +133,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 		if (indexSorting >= ARR_SIZE) sorting = false;
 	}
 
-	renderButton(renderer, monBouton);
+	renderButton(renderer, &monBouton);
 
 	SDL_RenderPresent(renderer);
-
-	free(monBouton);
 
 	return SDL_APP_CONTINUE;
 }
