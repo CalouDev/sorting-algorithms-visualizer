@@ -19,6 +19,7 @@
 #define WIN_H 640
 #define INTERVALLE 75 // ms
 #define ARR_SIZE 100
+#define N_ALGOS 2
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -27,7 +28,8 @@ Ushort arr[ARR_SIZE];
 
 Uint64 lastTime;
 
-void (*sortingFunctions[2])(Ushort[], Ushort, Ushort) = {sortInsertion, sortSelection};
+const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort"};
+void (*sortingFunctions[N_ALGOS])(Ushort[], Ushort, Ushort) = {sortInsertion, sortSelection};
 
 bool sorting = false;
 Ushort indexSorting;
@@ -96,13 +98,23 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 		case SDL_EVENT_MOUSE_MOTION:
 			monBouton.hovered = isHovered(monBouton.box, event->motion.x, event->motion.y);
 			break;
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+			if (event->button.button == SDL_BUTTON_LEFT) {
+				for (int i = 0; i < N_ALGOS; ++i) {
+					SDL_Log("%s", strSortingFunctions[i]);
+				}
+			}
+			break;
 		case SDL_EVENT_KEY_DOWN:
-			switch (event->key.scancode)
+			switch (event->key.scancode) {
 				case SDL_SCANCODE_SPACE:
 					indexSorting = 0;
 					sorting = true;
 					lastTime = SDL_GetTicks();
 					break;
+				default:
+					break;
+			}
 			break;
 		default:
 			break;
