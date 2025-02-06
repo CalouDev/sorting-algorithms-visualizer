@@ -19,22 +19,27 @@
 #define WIN_H 640
 #define INTERVALLE 75 // ms
 #define ARR_SIZE 100
-#define N_ALGOS 2
+#define N_ALGOS 5
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 
+// Useful vars
+
 Ushort arr[ARR_SIZE];
 
 Uint64 lastTime;
-
-const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort"};
-void (*sortingFunctions[N_ALGOS])(Ushort[], Ushort, Ushort) = {sortInsertion, sortSelection};
-
 bool sorting = false;
 Ushort indexSorting;
 
-Button monBouton;
+// Sorting Algos vars
+
+const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Quick Sort", "Merge Sort"};
+void (*sortingFunctions[N_ALGOS])(Ushort[], Ushort, Ushort) = {sortInsertion, sortSelection, sortSelection, sortSelection, sortSelection};
+
+// GUI vars
+
+Button buttons[N_ALGOS];
 SDL_MouseButtonFlags mouseData;
 float mouseX, mouseY;
 
@@ -76,9 +81,11 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 
 	lastTime = SDL_GetTicks();
 
-	monBouton = createButton(1050, 10, 200, 50);
+	for (int i = 0; i < N_ALGOS; ++i) {
+		buttons[i] = createButton(1050, 10 + 60 * i, 200, 50);
+	}
 
-    return SDL_APP_CONTINUE;
+	return SDL_APP_CONTINUE;
 }
 
 void SDL_AppQuit(void *appstate, SDL_AppResult result) {
@@ -96,13 +103,12 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 		case SDL_EVENT_QUIT:
 			return SDL_APP_SUCCESS;
 		case SDL_EVENT_MOUSE_MOTION:
-			monBouton.hovered = isHovered(monBouton.box, event->motion.x, event->motion.y);
+			for (int i = 0; i < N_ALGOS; ++i)
+				buttons[i].hovered = isHovered(buttons[i].box, event->motion.x, event->motion.y);
 			break;
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 			if (event->button.button == SDL_BUTTON_LEFT) {
-				for (int i = 0; i < N_ALGOS; ++i) {
-					SDL_Log("%s", strSortingFunctions[i]);
-				}
+				;
 			}
 			break;
 		case SDL_EVENT_KEY_DOWN:
@@ -142,7 +148,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 		if (indexSorting >= ARR_SIZE) sorting = false;
 	}
 
-	renderButton(renderer, &monBouton);
+	for (int i = 0; i < N_ALGOS; ++i)
+		renderButton(renderer, &buttons[i]);
 
 	SDL_RenderPresent(renderer);
 
