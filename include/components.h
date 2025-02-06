@@ -10,7 +10,7 @@ typedef struct {
 	bool pressed;
 } Button;
 
-Button* createButton(float x, float y, float w, float h);
+Button createButton(float x, float y, float w, float h);
 void renderButton(SDL_Renderer* renderer, Button* but);
 
 #endif
