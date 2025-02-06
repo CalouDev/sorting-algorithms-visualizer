@@ -12,7 +12,11 @@ Button createButton(float x, float y, float w, float h) {
 
 void renderButton(SDL_Renderer* renderer, Button* but) {
 	SDL_Color c = but->clr;
-	SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+
+	if (but->hovered)
+		SDL_SetRenderDrawColor(renderer, c.r - 50, c.g - 50, c.b - 50, c.a);
+	else
+		SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
 	SDL_RenderFillRect(renderer, &but->box);
 	SDL_RenderRect(renderer, &but->box);
 }
