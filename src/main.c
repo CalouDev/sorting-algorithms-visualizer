@@ -32,6 +32,8 @@ Uint64 lastTime;
 bool sorting = false;
 Ushort indexSorting;
 
+Ushort algoChoosen = 0;
+
 // Sorting Algos vars
 
 const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Quick Sort", "Merge Sort"};
@@ -118,15 +120,37 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 			break;
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 			if (event->button.button == SDL_BUTTON_LEFT) {
-				;
+				for (int i = 0; i < N_ALGOS; ++i) {
+					if (buttons[i].hovered) {
+						SDL_Log("Algo %d choisi : %s", i+1, strSortingFunctions[i]);
+						buttons[i].pressed = true;
+						algoChoosen = i+1;
+						shuffle(arr, ARR_SIZE);
+					}
+				}
+			}
+			break;
+		case SDL_EVENT_MOUSE_BUTTON_UP:
+			if (event->button.button == SDL_BUTTON_LEFT) {
+				for (int i = 0; i < N_ALGOS; ++i) 
+					if (buttons[i].pressed) buttons[i].pressed = false;
 			}
 			break;
 		case SDL_EVENT_KEY_DOWN:
 			switch (event->key.scancode) {
 				case SDL_SCANCODE_SPACE:
-					indexSorting = 0;
-					sorting = true;
+					switch (algoChoosen) {
+						case 0:
+							indexSorting = 1;
+							break;
+						case 1:
+							indexSorting = 0;
+							break;
+						default:
+							break;
+					}
 					lastTime = SDL_GetTicks();
+					sorting = true;
 					break;
 				default:
 					break;
@@ -153,7 +177,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
 	if (sorting && SDL_GetTicks() > lastTime + INTERVALLE) {
 		lastTime = SDL_GetTicks();
-		sortingFunctions[1](arr, ARR_SIZE, indexSorting);
+		sortingFunctions[algoChoosen](arr, ARR_SIZE, indexSorting);
 		indexSorting++;
 		if (indexSorting >= ARR_SIZE) sorting = false;
 	}
