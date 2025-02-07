@@ -13,10 +13,10 @@ Button createButton(float x, float y, float w, float h) {
 void renderButton(SDL_Renderer* renderer, Button* but) {
 	SDL_Color c = but->clr;
 
-	if (but->hovered)
-		SDL_SetRenderDrawColor(renderer, c.r - 50, c.g - 50, c.b - 50, c.a);
-	else
-		SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+	if (but->pressed) SDL_SetRenderDrawColor(renderer, c.r - 100, c.g - 100, c.b - 100, c.a - 100);
+	else if (but->hovered)	SDL_SetRenderDrawColor(renderer, c.r - 50, c.g - 50, c.b - 50, c.a);
+	else SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+
 	SDL_RenderFillRect(renderer, &but->box);
 	SDL_RenderRect(renderer, &but->box);
 }
@@ -24,8 +24,3 @@ void renderButton(SDL_Renderer* renderer, Button* but) {
 bool isHovered(SDL_FRect box, float mouseX, float mouseY) {
 	return (mouseX >= box.x && mouseX <= box.x + box.w && mouseY >= box.y && mouseY <= box.y + box.h);
 }
-
-bool isPressed(SDL_MouseButtonFlags data, SDL_FRect box, float mouseX, float mouseY) {
-	return (isHovered(box, mouseX, mouseY) && data == 1);
-}
-
