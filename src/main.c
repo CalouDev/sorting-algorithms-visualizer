@@ -124,7 +124,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 					if (buttons[i].hovered) {
 						SDL_Log("Algo %d choisi : %s", i+1, strSortingFunctions[i]);
 						buttons[i].pressed = true;
-						algoChoosen = i+1;
+						algoChoosen = i;
 						shuffle(arr, ARR_SIZE);
 					}
 				}
