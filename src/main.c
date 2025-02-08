@@ -37,6 +37,7 @@ Ushort algoChoosen = 0;
 // Sorting Algos vars
 
 const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Quick Sort", "Merge Sort"};
+TTF_Text* buttonsText[N_ALGOS];
 void (*sortingFunctions[N_ALGOS])(Ushort[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortSelection, sortSelection};
 
 // GUI vars
@@ -50,7 +51,7 @@ bool elementHovered = false;
 
 TTF_Font *font;
 TTF_TextEngine* textEngine;
-TTF_Text* test;
+TTF_Text* topLeftText;
 const char* currentAlgoText = "Insertion Sort";
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
@@ -96,12 +97,13 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 
 	font = TTF_OpenFont("font/sans.ttf", 25);
 
-	test = TTF_CreateText(textEngine, font, currentAlgoText, strlen(currentAlgoText));
+	topLeftText = TTF_CreateText(textEngine, font, currentAlgoText, strlen(currentAlgoText));
 
 	lastTime = SDL_GetTicks();
 
 	for (int i = 0; i < N_ALGOS; ++i) {
 		buttons[i] = createButton(1050, 10 + 60 * i, 200, 50);
+		buttonsText[i] = TTF_CreateText(textEngine, font, strSortingFunctions[i], strlen(strSortingFunctions[i]));
 	}
 
 	return SDL_APP_CONTINUE;
@@ -116,7 +118,8 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
 	SDL_Quit();
 
 	TTF_DestroyGPUTextEngine(textEngine);
-	TTF_DestroyText(test);
+	TTF_DestroyText(topLeftText);
+	for (int i = 0; i < N_ALGOS; ++i) TTF_DestroyText(buttonsText[i]);
 	TTF_Quit();
 }
 
@@ -140,7 +143,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 						sorting = false;
 						algoChoosen = i;
 						currentAlgoText = strSortingFunctions[i];
-						test = TTF_CreateText(textEngine, font, currentAlgoText, strlen(currentAlgoText));	
+						topLeftText = TTF_CreateText(textEngine, font, currentAlgoText, strlen(currentAlgoText));	
 						shuffle(arr, ARR_SIZE);
 					}
 				}
@@ -192,7 +195,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
-	TTF_DrawRendererText(test, 10.0, 10.0);
+	TTF_SetTextColor(topLeftText, 255, 255, 255, SDL_ALPHA_OPAQUE);
+	TTF_DrawRendererText(topLeftText, 10.0, 10.0);
 
 	SDL_SetRenderDrawColor(renderer, 200, 200, 200, SDL_ALPHA_OPAQUE);
 
@@ -207,8 +211,11 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 		if (indexSorting >= ARR_SIZE) sorting = false;
 	}
 
-	for (int i = 0; i < N_ALGOS; ++i)
-		renderButton(renderer, &buttons[i], strSortingFunctions[i]);
+	for (int i = 0; i < N_ALGOS; ++i) {
+		renderButton(renderer, &buttons[i]);
+		TTF_SetTextColor(buttonsText[i], 0, 0, 0, SDL_ALPHA_OPAQUE);
+		TTF_DrawRendererText(buttonsText[i], 1060, 20 + 60 * i);
+	}
 
 	if (elementHovered) SDL_SetCursor(handCursor);
 	else SDL_SetCursor(defaultCursor);
