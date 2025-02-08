@@ -11,7 +11,7 @@ typedef struct {
 } Button;
 
 Button createButton(float x, float y, float w, float h);
-void renderButton(SDL_Renderer* renderer, Button* but, char* text);
+void renderButton(SDL_Renderer* renderer, Button* but, char const *text);
 bool isHovered(SDL_FRect box, float mouseX, float mouseY);
 
 #endif
