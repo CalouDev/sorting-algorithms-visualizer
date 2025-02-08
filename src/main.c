@@ -48,17 +48,7 @@ float mouseX, mouseY;
 SDL_Cursor *handCursor, *defaultCursor;
 bool elementHovered = false;
 
-TTF_Font* font;
-//SDL_Surface textSurface;
-//SDL_Texture textTexture;
-const char* buffer = "ceci est un test";
-SDL_Color green = {0, 255, 0, SDL_ALPHA_OPAQUE};
-SDL_Rect rect = {10, 10, 100, 50};
-
-// Test
-
-TTF_Text bufferFinal;
-SDL_Surface* screenSurface;
+TTF_Font *font;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	srand(time(NULL));
@@ -107,12 +97,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 		buttons[i] = createButton(1050, 10 + 60 * i, 200, 50);
 	}
 
-	screenSurface = SDL_CreateSurface(WIN_W, WIN_H, SDL_PIXELFORMAT_RGBA32);
-
-	bufferFinal = *TTF_CreateText(NULL, font, "Hello world", 12);
-	TTF_SetTextColor(&bufferFinal, 255, 255, 255, SDL_ALPHA_OPAQUE);
-	TTF_SetTextPosition(&bufferFinal, 10, 10);
-
 	return SDL_APP_CONTINUE;
 }
 
@@ -121,10 +105,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
     renderer = NULL;
     SDL_DestroyWindow(window);
     window = NULL;
-    TTF_CloseFont(font);
-	TTF_DestroyText(&bufferFinal);
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
-	SDL_DestroySurface(screenSurface);
 	SDL_Quit();
 	TTF_Quit();
 }
@@ -192,8 +173,6 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
 	SDL_SetRenderDrawColor(renderer, 10, 10, 10, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
-
-	TTF_DrawSurfaceText(&bufferFinal, 0, 0, screenSurface);
 
 	SDL_SetRenderDrawColor(renderer, 200, 200, 200, SDL_ALPHA_OPAQUE);
 
