@@ -14,20 +14,24 @@ void sortInsertion(Ushort arr[], Ushort size, Ushort index) {
 	arr[currentIndex + 1] = currentElement;
 }
 
-void sortSelection(Ushort arr[], Ushort size) {
-	Ushort mini, index;
+void sortSelection(Ushort arr[], Ushort size, Ushort index) {
+	Ushort mini, indexMin;
+	indexMin = index;
+	mini = arr[indexMin];
 
-	for (Ushort i = 0; i < size - 1; ++i) {
-		index = i;
-		mini = arr[index];
-
-		for (Ushort j = i + 1; j < size; ++j) {
-			if (arr[j] < mini) {
-				mini = arr[j];
-				index = j;
-			}
+	for (Ushort j = index + 1; j < size; ++j) {
+		if (arr[j] < mini) {
+			mini = arr[j];
+			indexMin = j;
 		}
-
-		swap(&arr[i], &arr[index]);
 	}
+
+	swap(&arr[index], &arr[indexMin]);
 }
+
+
+void sortBubble(Ushort arr[], Ushort size, Ushort index) {
+	for (Ushort j = 0; j < size - index - 1; ++j)
+		if (arr[j] > arr[j+1]) swap(&arr[j], &arr[j+1]);
+}
+
