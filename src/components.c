@@ -10,7 +10,7 @@ Button createButton(float x, float y, float w, float h) {
     };
 }
 
-void renderButton(SDL_Renderer* renderer, Button* but) {
+void renderButton(SDL_Renderer* renderer, Button* but, char* text) {
 	SDL_Color c = but->clr;
 
 	if (but->pressed) SDL_SetRenderDrawColor(renderer, c.r - 100, c.g - 100, c.b - 100, c.a - 100);
