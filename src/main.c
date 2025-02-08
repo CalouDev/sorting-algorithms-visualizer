@@ -37,7 +37,7 @@ Ushort algoChoosen = 0;
 // Sorting Algos vars
 
 const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Quick Sort", "Merge Sort"};
-void (*sortingFunctions[N_ALGOS])(Ushort[], Ushort, Ushort) = {sortInsertion, sortSelection, sortSelection, sortSelection, sortSelection};
+void (*sortingFunctions[N_ALGOS])(Ushort[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortSelection, sortSelection};
 
 // GUI vars
 
@@ -127,6 +127,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 				for (int i = 0; i < N_ALGOS; ++i) {
 					if (buttons[i].hovered) {
 						buttons[i].pressed = true;
+						sorting = false;
 						algoChoosen = i;
 						shuffle(arr, ARR_SIZE);
 					}
@@ -148,6 +149,9 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 								indexSorting = 1;
 								break;
 							case 1:
+								indexSorting = 0;
+								break;
+							case 2:
 								indexSorting = 0;
 								break;
 							default:
