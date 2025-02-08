@@ -34,6 +34,8 @@ Ushort indexSorting;
 
 Ushort algoChoosen = 0;
 
+char* fontPath;
+
 // Sorting Algos vars
 
 const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Quick Sort", "Merge Sort"};
@@ -94,8 +96,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 
 	handCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
 	defaultCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
-
-	font = TTF_OpenFont("font/sans.ttf", 25);
+	
+	SDL_asprintf(&fontPath, "%s../font/%s", SDL_GetBasePath(), "sans.ttf");
+	font = TTF_OpenFont(fontPath, 25);
 
 	topLeftText = TTF_CreateText(textEngine, font, currentAlgoText, strlen(currentAlgoText));
 
@@ -114,6 +117,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
     renderer = NULL;
     SDL_DestroyWindow(window);
     window = NULL;
+	SDL_free(fontPath);
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	SDL_Quit();
 
