@@ -49,6 +49,9 @@ SDL_Cursor *handCursor, *defaultCursor;
 bool elementHovered = false;
 
 TTF_Font *font;
+TTF_TextEngine* textEngine;
+TTF_Text* test;
+const char* currentAlgoText = "Insertion Sort";
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	srand(time(NULL));
@@ -86,10 +89,14 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
         return SDL_APP_FAILURE;
     }
 
+	textEngine = TTF_CreateRendererTextEngine(renderer);
+
 	handCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
 	defaultCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
 
 	font = TTF_OpenFont("font/sans.ttf", 25);
+
+	test = TTF_CreateText(textEngine, font, currentAlgoText, strlen(currentAlgoText));
 
 	lastTime = SDL_GetTicks();
 
@@ -107,6 +114,9 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
     window = NULL;
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	SDL_Quit();
+
+	TTF_DestroyGPUTextEngine(textEngine);
+	TTF_DestroyText(test);
 	TTF_Quit();
 }
 
@@ -129,6 +139,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 						buttons[i].pressed = true;
 						sorting = false;
 						algoChoosen = i;
+						currentAlgoText = strSortingFunctions[i];
+						test = TTF_CreateText(textEngine, font, currentAlgoText, strlen(currentAlgoText));	
 						shuffle(arr, ARR_SIZE);
 					}
 				}
@@ -177,6 +189,10 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
 	SDL_SetRenderDrawColor(renderer, 10, 10, 10, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
+
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+
+	TTF_DrawRendererText(test, 10.0, 10.0);
 
 	SDL_SetRenderDrawColor(renderer, 200, 200, 200, SDL_ALPHA_OPAQUE);
 
