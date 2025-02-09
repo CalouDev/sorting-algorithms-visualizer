@@ -97,7 +97,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	handCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
 	defaultCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
 	
-	SDL_asprintf(&fontPath, "%s../font/%s", SDL_GetBasePath(), "sans.ttf");
+	SDL_asprintf(&fontPath, "%s/font/%s", SDL_GetBasePath(), "sans.ttf");
+	SDL_Log("%s", fontPath);
 	font = TTF_OpenFont(fontPath, 25);
 
 	topLeftText = TTF_CreateText(textEngine, font, currentAlgoText, strlen(currentAlgoText));
