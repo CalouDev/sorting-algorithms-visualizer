@@ -122,7 +122,6 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
 	SDL_free(fontPath);
 	SDL_free(algoTextName);
 	for (int i = 0; i < N_ALGOS; ++i) {
-		 SDL_free(strSortingFunctions);
 		 TTF_DestroyText(buttonsText[i]);
 	}
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
