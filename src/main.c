@@ -1,3 +1,9 @@
+#define SDL_MAIN_USE_CALLBACKS
+#include <SDL3/SDL_main.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_ttf.h>
+#include <string.h>
+#include <stdlib.h>
 #include <time.h>
 #include "../include/sorting_algorithms.h"
 #include "../include/utils.h"
@@ -115,12 +121,15 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
     window = NULL;
 	SDL_free(fontPath);
 	SDL_free(algoTextName);
+	for (int i = 0; i < N_ALGOS; ++i) {
+		 SDL_free(strSortingFunctions);
+		 TTF_DestroyText(buttonsText[i]);
+	}
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	SDL_Quit();
 
 	TTF_DestroyGPUTextEngine(textEngine);
 	TTF_DestroyText(topLeftText);
-	for (int i = 0; i < N_ALGOS; ++i) TTF_DestroyText(buttonsText[i]);
 	TTF_Quit();
 }
 
@@ -143,8 +152,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 						buttons[i].pressed = true;
 						sorting = false;
 						algoChoosen = i;
-						//currentAlgoText = strSortingFunctions[i];
-						//strcat(currentAlgoText, " - delay 75 ms");
+						for (Ushort i = 0; i < ARR_SIZE; ++i) arr[i] = abs(arr[i]);
 						topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));	
 						shuffle(arr, ARR_SIZE);
 					}
@@ -201,9 +209,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 	TTF_DrawRendererText(topLeftText, 10, 10);
 
 	for (Ushort i = 0; i < ARR_SIZE; ++i) {
-		if (arr[i] < 0) {
-			SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-		} else SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+		if (arr[i] < 0)	SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+		else SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 		SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - abs(arr[i]) * 6);
 	}
 
