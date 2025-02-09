@@ -100,8 +100,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	SDL_asprintf(&fontPath, "%s/../font/%s", SDL_GetBasePath(), "sans.ttf");
 	font = TTF_OpenFont(fontPath, 25);
 	
-	algoTextName = SDL_malloc(strlen(strSortingFunctions[0]));
+	algoTextName = SDL_malloc(strlen(strSortingFunctions[0]) + strlen(" - Delay 75 ms") + 1);
 	strcpy(algoTextName, strSortingFunctions[0]);
+	strcat(algoTextName, " - delay 75 ms");
 	topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));
 
 	lastTime = SDL_GetTicks();
@@ -152,6 +153,9 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 						sorting = false;
 						algoChoosen = i;
 						for (Ushort i = 0; i < ARR_SIZE; ++i) arr[i] = abs(arr[i]);
+						algoTextName = SDL_realloc(algoTextName, strlen(strSortingFunctions[i]) + strlen(" - delay 75 ms") + 1);
+						strcpy(algoTextName, strSortingFunctions[i]);
+						strcat(algoTextName, " - delay 75 ms");
 						topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));	
 						shuffle(arr, ARR_SIZE);
 					}
