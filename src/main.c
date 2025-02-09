@@ -172,19 +172,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 			switch (event->key.scancode) {
 				case SDL_SCANCODE_SPACE:
 					if (!sorting) {
-						switch (algoChoosen) {
-							case 0:
-								indexSorting = 1;
-								break;
-							case 1:
-								indexSorting = 0;
-								break;
-							case 2:
-								indexSorting = 0;
-								break;
-							default:
-								break;
-						}
+						if (algoChoosen == 0) indexSorting = 1;
+						else if (algoChoosen == 1 || algoChoosen == 2) indexSorting = 0;
 						lastTime = SDL_GetTicks();
 						sorting = true;
 					}
