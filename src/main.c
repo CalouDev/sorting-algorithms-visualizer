@@ -1,9 +1,3 @@
-#define SDL_MAIN_USE_CALLBACKS
-#include <SDL3/SDL_main.h>
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_ttf.h>
-#include <string.h>
-#include <stdlib.h>
 #include <time.h>
 #include "../include/sorting_algorithms.h"
 #include "../include/utils.h"
@@ -26,7 +20,7 @@ static SDL_Renderer *renderer = NULL;
 
 // Useful vars
 
-Ushort arr[ARR_SIZE];
+short arr[ARR_SIZE];
 
 Uint64 lastTime;
 bool sorting = false;
@@ -40,7 +34,7 @@ char* fontPath;
 
 const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Quick Sort", "Merge Sort"};
 TTF_Text* buttonsText[N_ALGOS];
-void (*sortingFunctions[N_ALGOS])(Ushort[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortSelection, sortSelection};
+void (*sortingFunctions[N_ALGOS])(short[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortSelection, sortSelection};
 
 // GUI vars
 
@@ -54,7 +48,7 @@ bool elementHovered = false;
 TTF_Font *font;
 TTF_TextEngine* textEngine;
 TTF_Text* topLeftText;
-const char* currentAlgoText = "Insertion Sort";
+char* algoTextName;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	srand(time(NULL));
@@ -98,10 +92,11 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	defaultCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
 	
 	SDL_asprintf(&fontPath, "%s/../font/%s", SDL_GetBasePath(), "sans.ttf");
-	SDL_Log("%s", fontPath);
 	font = TTF_OpenFont(fontPath, 25);
-
-	topLeftText = TTF_CreateText(textEngine, font, currentAlgoText, strlen(currentAlgoText));
+	
+	algoTextName = SDL_malloc(strlen(strSortingFunctions[0]));
+	strcpy(algoTextName, strSortingFunctions[0]);
+	topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));
 
 	lastTime = SDL_GetTicks();
 
@@ -119,6 +114,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
     SDL_DestroyWindow(window);
     window = NULL;
 	SDL_free(fontPath);
+	SDL_free(algoTextName);
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	SDL_Quit();
 
@@ -147,8 +143,9 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 						buttons[i].pressed = true;
 						sorting = false;
 						algoChoosen = i;
-						currentAlgoText = strSortingFunctions[i];
-						topLeftText = TTF_CreateText(textEngine, font, currentAlgoText, strlen(currentAlgoText));	
+						//currentAlgoText = strSortingFunctions[i];
+						//strcat(currentAlgoText, " - delay 75 ms");
+						topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));	
 						shuffle(arr, ARR_SIZE);
 					}
 				}
@@ -198,19 +195,21 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 	SDL_SetRenderDrawColor(renderer, 10, 10, 10, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
 
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+	// SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 
 	TTF_SetTextColor(topLeftText, 255, 255, 255, SDL_ALPHA_OPAQUE);
-	TTF_DrawRendererText(topLeftText, 10.0, 10.0);
-
-	SDL_SetRenderDrawColor(renderer, 200, 200, 200, SDL_ALPHA_OPAQUE);
+	TTF_DrawRendererText(topLeftText, 10, 10);
 
 	for (Ushort i = 0; i < ARR_SIZE; ++i) {
-		SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - arr[i] * 6);
+		if (arr[i] < 0) {
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+		} else SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+		SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - abs(arr[i]) * 6);
 	}
 
 	if (sorting && SDL_GetTicks() > lastTime + INTERVALLE) {
 		lastTime = SDL_GetTicks();
+		for (Ushort i = 0; i < ARR_SIZE; ++i) { arr[i] = abs(arr[i]); }
 		sortingFunctions[algoChoosen](arr, ARR_SIZE, indexSorting);
 		indexSorting++;
 		if (indexSorting >= ARR_SIZE) sorting = false;
