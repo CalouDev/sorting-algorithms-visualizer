@@ -142,6 +142,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 					if (buttons[i].hovered) {
 						buttons[i].pressed = true;
 						sorting = false;
+						greenPassingIndex = -1;
 						algoChoosen = i;
 						for (Ushort i = 0; i < ARR_SIZE; ++i) arr[i] = abs(arr[i]);
 						algoTextName = SDL_realloc(algoTextName, strlen(strSortingFunctions[i]) + strlen(" - delay 75 ms") + 1);
@@ -187,28 +188,33 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 	SDL_SetRenderDrawColor(renderer, 10, 10, 10, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
 
-	// SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-
 	TTF_SetTextColor(topLeftText, 255, 255, 255, SDL_ALPHA_OPAQUE);
 	TTF_DrawRendererText(topLeftText, 10, 10);
 
-	for (Ushort i = 0; i < ARR_SIZE; ++i) {
-		if (arr[i] < 0)	SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+	SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
+	for (short i = 0; i <= greenPassingIndex; ++i) SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - abs(arr[i]) * 6);
+		
+
+	for (Ushort i = greenPassingIndex + 1; i < ARR_SIZE; ++i) {
+		 if (arr[i] < 0) SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
 		else SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 		SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - abs(arr[i]) * 6);
 	}
 
-	if (sorting && SDL_GetTicks() > lastTime + INTERVALLE) {
-		lastTime = SDL_GetTicks();
-		for (Ushort i = 0; i < ARR_SIZE; ++i) { arr[i] = abs(arr[i]); }
-		sortingFunctions[algoChoosen](arr, ARR_SIZE, indexSorting);
-		indexSorting++;
-		if (indexSorting >= ARR_SIZE) {
-			sorting = false;
-			greenPassingIndex == 0;
+	if (SDL_GetTicks() > lastTime + INTERVALLE) {
+		if (sorting) {
+			for (Ushort i = 0; i < ARR_SIZE; ++i) { arr[i] = abs(arr[i]); }
+			sortingFunctions[algoChoosen](arr, ARR_SIZE, indexSorting);
+			indexSorting++;
+			if (indexSorting >= ARR_SIZE) {
+				sorting = false;
+				greenPassingIndex = 0;
+			}
+		} else if (greenPassingIndex >= 0) {
+			if (greenPassingIndex < ARR_SIZE - 1) greenPassingIndex++;
 		}
-	} else if (greenPassingIndex >= 0 && SDL_GetTicks() > lastTime + INTERVALLE) {
-		SDL_SetDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
+
+		lastTime = SDL_GetTicks();
 	}
 
 	for (int i = 0; i < N_ALGOS; ++i) {
@@ -224,3 +230,4 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
 	return SDL_APP_CONTINUE;
 }
+
