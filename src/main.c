@@ -203,15 +203,13 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 		SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - abs(arr[i]) * 6);
 	}
 
-	if (SDL_GetTicks() > sortingTimer + SORTING_INTERVAL) {
-		if (sorting) {
-			for (Ushort i = 0; i < ARR_SIZE; ++i) { arr[i] = abs(arr[i]); }
-			sortingFunctions[algoChoosen](arr, ARR_SIZE, indexSorting);
-			indexSorting++;
-			if (indexSorting >= ARR_SIZE) {
-				sorting = false;
-				greenPassingIndex = 0;
-			}
+	if (sorting && SDL_GetTicks() > sortingTimer + SORTING_INTERVAL) {
+		for (Ushort i = 0; i < ARR_SIZE; ++i) { arr[i] = abs(arr[i]); }
+		sortingFunctions[algoChoosen](arr, ARR_SIZE, indexSorting);
+		indexSorting++;
+		if (indexSorting >= ARR_SIZE) {
+			sorting = false;
+			greenPassingIndex = 0;
 		}
 
 		sortingTimer = SDL_GetTicks();
