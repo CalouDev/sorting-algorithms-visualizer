@@ -17,7 +17,8 @@
 
 #define WIN_W 1280
 #define WIN_H 640
-#define INTERVALLE 75 // ms
+#define SORTING_INTERVAL 75
+#define GREEN_EFFECT_INTERVAL 10 
 #define ARR_SIZE 100
 #define N_ALGOS 5
 
@@ -28,7 +29,7 @@ static SDL_Renderer *renderer = NULL;
 
 short arr[ARR_SIZE];
 
-Uint64 lastTime;
+Uint64 sortingTimer, greenTimer;
 bool sorting = false;
 Ushort indexSorting;
 
@@ -96,7 +97,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	strcat(algoTextName, " - delay 75 ms");
 	topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));
 
-	lastTime = SDL_GetTicks();
+	sortingTimer = SDL_GetTicks();
+	greenTimer = SDL_GetTicks();
 
 	for (int i = 0; i < N_ALGOS; ++i) {
 		buttons[i] = createButton(1050, 10 + 60 * i, 200, 50);
@@ -167,7 +169,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 					if (!sorting) {
 						if (algoChoosen == 0) indexSorting = 1;
 						else if (algoChoosen == 1 || algoChoosen == 2) indexSorting = 0;
-						lastTime = SDL_GetTicks();
+						sortingTimer = SDL_GetTicks();
 						sorting = true;
 					}
 					break;
@@ -196,12 +198,12 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 		
 
 	for (Ushort i = greenPassingIndex + 1; i < ARR_SIZE; ++i) {
-		 if (arr[i] < 0) SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+		if (arr[i] < 0) SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
 		else SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 		SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - abs(arr[i]) * 6);
 	}
 
-	if (SDL_GetTicks() > lastTime + INTERVALLE) {
+	if (SDL_GetTicks() > sortingTimer + SORTING_INTERVAL) {
 		if (sorting) {
 			for (Ushort i = 0; i < ARR_SIZE; ++i) { arr[i] = abs(arr[i]); }
 			sortingFunctions[algoChoosen](arr, ARR_SIZE, indexSorting);
@@ -210,11 +212,14 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 				sorting = false;
 				greenPassingIndex = 0;
 			}
-		} else if (greenPassingIndex >= 0) {
-			if (greenPassingIndex < ARR_SIZE - 1) greenPassingIndex++;
 		}
 
-		lastTime = SDL_GetTicks();
+		sortingTimer = SDL_GetTicks();
+	}
+
+	if (greenPassingIndex >= 0 && greenPassingIndex < ARR_SIZE - 1 && SDL_GetTicks() > greenTimer + GREEN_EFFECT_INTERVAL) {
+		greenPassingIndex++;
+		greenTimer = SDL_GetTicks();
 	}
 
 	for (int i = 0; i < N_ALGOS; ++i) {
@@ -230,4 +235,3 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
 	return SDL_APP_CONTINUE;
 }
-
