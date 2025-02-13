@@ -11,7 +11,7 @@ sortingState sortInsertion(short arr[], Ushort size, Ushort index) {
 		currentIndex--;
 	}
 
-	arr[currentIndex + 1] = -currentElement;
+	arr[currentIndex + 1] = (index < size - 1 ? -1 : 1) * currentElement;
 
 	return SORTING_CONTINUE;
 }
