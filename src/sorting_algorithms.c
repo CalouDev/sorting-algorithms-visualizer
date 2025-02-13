@@ -37,7 +37,7 @@ int sortSelection(short arr[], Ushort size, Ushort index) {
 
 
 int sortBubble(short arr[], Ushort size, Ushort index) {
-	int swapped = SORTING_STOP;
+	enum sortingState swapped = SORTING_STOP;
 	for (Ushort j = 0; j < size - index - 1; ++j) {
 		if (abs(arr[j]) > abs(arr[j+1])) {
 			swap(&arr[j], &arr[j+1]);
