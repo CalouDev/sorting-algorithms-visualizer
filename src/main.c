@@ -2,18 +2,13 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_ttf.h>
+#include <SDL3/SDL_mixer.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
 #include "../include/sorting_algorithms.h"
 #include "../include/utils.h"
 #include "../include/components.h"
-
-/*
-
-   gcc src/*.c -o bin/app -I include -L lib -lmingw32 -lSDL3 -lSDL3_ttf -mwindows
-
-*/
 
 #define WIN_W 1280
 #define WIN_H 640
@@ -41,7 +36,7 @@ sortingState isSorted;
 
 // Sorting Algos vars
 
-const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Quick Sort", "Merge Sort"};
+const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Merge Sort", "Quick Sort"};
 TTF_Text* buttonsText[N_ALGOS];
 sortingState (*sortingFunctions[N_ALGOS])(short[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortSelection, sortSelection};
 
@@ -74,7 +69,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	// SDL Initialize
 	
     if (!SDL_Init(SDL_INIT_VIDEO)) return SDL_APP_FAILURE;
-
+	if (!SDL_Init(SDL_INIT_AUDIO)) return SDL_APP_FAILURE;
 	if (!TTF_Init()) return SDL_APP_FAILURE;
 
     window = SDL_CreateWindow("Sorting Algorithms Visualizer", WIN_W, WIN_H, SDL_WINDOW_OPENGL);
@@ -196,9 +191,15 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 	TTF_SetTextColor(topLeftText, 255, 255, 255, SDL_ALPHA_OPAQUE);
 	TTF_DrawRendererText(topLeftText, 10, 10);
 
-	SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
-	for (short i = 0; i <= greenPassingIndex; ++i) SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - abs(arr[i]) * 6);
-		
+	if (greenPassingIndex >= 0) {
+		SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
+		for (short i = 0; i <= greenPassingIndex - 1; ++i) SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - abs(arr[i]) * 6);
+
+		if (greenPassingIndex <= ARR_SIZE-1) {
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+			SDL_RenderLine(renderer, 10 + greenPassingIndex * 10, WIN_H, 10 + greenPassingIndex * 10, WIN_H - abs(arr[greenPassingIndex]) * 6);
+		}
+	}
 
 	for (Ushort i = greenPassingIndex + 1; i < ARR_SIZE; ++i) {
 		if (arr[i] < 0) SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
@@ -218,7 +219,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 		sortingTimer = SDL_GetTicks();
 	}
 
-	if (greenPassingIndex >= 0 && greenPassingIndex < ARR_SIZE - 1 && SDL_GetTicks() > greenTimer + GREEN_EFFECT_INTERVAL) {
+	if (greenPassingIndex >= 0 && greenPassingIndex < ARR_SIZE && SDL_GetTicks() > greenTimer + GREEN_EFFECT_INTERVAL) {
 		greenPassingIndex++;
 		greenTimer = SDL_GetTicks();
 	}
