@@ -2,7 +2,7 @@
 #include "../include/utils.h"
 #include <stdlib.h>
 
-int sortInsertion(short arr[], Ushort size, Ushort index) {
+sortingState sortInsertion(short arr[], Ushort size, Ushort index) {
 	short currentElement = arr[index];
 	short currentIndex = index - 1;	
 
@@ -16,7 +16,7 @@ int sortInsertion(short arr[], Ushort size, Ushort index) {
 	return SORTING_CONTINUE;
 }
 
-int sortSelection(short arr[], Ushort size, Ushort index) {
+sortingState sortSelection(short arr[], Ushort size, Ushort index) {
 	Ushort mini, indexMin;
 	indexMin = index;
 	mini = arr[indexMin];
@@ -36,8 +36,8 @@ int sortSelection(short arr[], Ushort size, Ushort index) {
 }
 
 
-int sortBubble(short arr[], Ushort size, Ushort index) {
-	enum sortingState swapped = SORTING_STOP;
+sortingState sortBubble(short arr[], Ushort size, Ushort index) {
+	sortingState swapped = SORTING_STOP;
 	for (Ushort j = 0; j < size - index - 1; ++j) {
 		if (abs(arr[j]) > abs(arr[j+1])) {
 			swap(&arr[j], &arr[j+1]);
