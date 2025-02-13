@@ -1,20 +1,22 @@
 #include "../include/sorting_algorithms.h"
 #include "../include/utils.h"
+#include <stdlib.h>
 
-
-void sortInsertion(Ushort arr[], Ushort size, Ushort index) {
-	Ushort currentElement = arr[index];
-	short currentIndex = index - 1;
+int sortInsertion(short arr[], Ushort size, Ushort index) {
+	short currentElement = arr[index];
+	short currentIndex = index - 1;	
 
 	while (currentIndex >= 0 && currentElement < arr[currentIndex]) {
 		arr[currentIndex + 1] = arr[currentIndex];
 		currentIndex--;
 	}
 
-	arr[currentIndex + 1] = currentElement;
+	arr[currentIndex + 1] = -currentElement;
+
+	return SORTING_CONTINUE;
 }
 
-void sortSelection(Ushort arr[], Ushort size, Ushort index) {
+int sortSelection(short arr[], Ushort size, Ushort index) {
 	Ushort mini, indexMin;
 	indexMin = index;
 	mini = arr[indexMin];
@@ -27,11 +29,24 @@ void sortSelection(Ushort arr[], Ushort size, Ushort index) {
 	}
 
 	swap(&arr[index], &arr[indexMin]);
+	arr[index] = -arr[index];
+	arr[indexMin] = -arr[indexMin];
+
+	return SORTING_CONTINUE;
 }
 
 
-void sortBubble(Ushort arr[], Ushort size, Ushort index) {
-	for (Ushort j = 0; j < size - index - 1; ++j)
-		if (arr[j] > arr[j+1]) swap(&arr[j], &arr[j+1]);
+int sortBubble(short arr[], Ushort size, Ushort index) {
+	int swapped = SORTING_STOP;
+	for (Ushort j = 0; j < size - index - 1; ++j) {
+		if (abs(arr[j]) > abs(arr[j+1])) {
+			swap(&arr[j], &arr[j+1]);
+			arr[j] = -arr[j];
+			arr[j+1] = -arr[j+1];
+			swapped = SORTING_CONTINUE;
+		}
+	}
+
+	return swapped;
 }
 
