@@ -37,13 +37,13 @@ Ushort algoChoosen = 0;
 
 char* fontPath;
 
-int isSorted;
+sortingState isSorted;
 
 // Sorting Algos vars
 
 const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Quick Sort", "Merge Sort"};
 TTF_Text* buttonsText[N_ALGOS];
-int (*sortingFunctions[N_ALGOS])(short[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortSelection, sortSelection};
+sortingState (*sortingFunctions[N_ALGOS])(short[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortSelection, sortSelection};
 
 short greenPassingIndex = -1;
 
