@@ -37,11 +37,13 @@ Ushort algoChoosen = 0;
 
 char* fontPath;
 
+int isSorted;
+
 // Sorting Algos vars
 
 const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Quick Sort", "Merge Sort"};
 TTF_Text* buttonsText[N_ALGOS];
-void (*sortingFunctions[N_ALGOS])(short[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortSelection, sortSelection};
+int (*sortingFunctions[N_ALGOS])(short[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortSelection, sortSelection};
 
 short greenPassingIndex = -1;
 
@@ -83,6 +85,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 
     if (!renderer) return SDL_APP_FAILURE;
 
+	isSorted = SORTING_CONTINUE;
+
 	textEngine = TTF_CreateRendererTextEngine(renderer);
 
 	handCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
@@ -115,9 +119,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
     window = NULL;
 	SDL_free(fontPath);
 	SDL_free(algoTextName);
-	for (int i = 0; i < N_ALGOS; ++i) {
-		 TTF_DestroyText(buttonsText[i]);
-	}
+	for (int i = 0; i < N_ALGOS; ++i) TTF_DestroyText(buttonsText[i]);
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	SDL_Quit();
 
@@ -144,6 +146,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 					if (buttons[i].hovered) {
 						buttons[i].pressed = true;
 						sorting = false;
+						isSorted = SORTING_CONTINUE;
 						greenPassingIndex = -1;
 						algoChoosen = i;
 						for (Ushort i = 0; i < ARR_SIZE; ++i) arr[i] = abs(arr[i]);
@@ -205,9 +208,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
 	if (sorting && SDL_GetTicks() > sortingTimer + SORTING_INTERVAL) {
 		for (Ushort i = 0; i < ARR_SIZE; ++i) { arr[i] = abs(arr[i]); }
-		sortingFunctions[algoChoosen](arr, ARR_SIZE, indexSorting);
+		isSorted = sortingFunctions[algoChoosen](arr, ARR_SIZE, indexSorting);
 		indexSorting++;
-		if (indexSorting >= ARR_SIZE) {
+		if (isSorted == SORTING_STOP || indexSorting >= ARR_SIZE) {
 			sorting = false;
 			greenPassingIndex = 0;
 		}
