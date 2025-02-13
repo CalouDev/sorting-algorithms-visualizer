@@ -3,8 +3,10 @@
 
 typedef unsigned short Ushort;
 
-void sortInsertion(Ushort arr[], Ushort size, Ushort index);
-void sortSelection(Ushort arr[], Ushort size, Ushort index);
-void sortBubble(Ushort arr[], Ushort size, Ushort index);
+enum sortingState{SORTING_STOP, SORTING_CONTINUE};
+
+int sortInsertion(short arr[], Ushort size, Ushort index);
+int sortSelection(short arr[], Ushort size, Ushort index);
+int sortBubble(short arr[], Ushort size, Ushort index);
 
 #endif
