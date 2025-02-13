@@ -2,11 +2,10 @@
 #define SORTING_ALGORITHMS
 
 typedef unsigned short Ushort;
+typedef enum {SORTING_STOP, SORTING_CONTINUE} sortingState;
 
-enum sortingState{SORTING_STOP, SORTING_CONTINUE};
-
-int sortInsertion(short arr[], Ushort size, Ushort index);
-int sortSelection(short arr[], Ushort size, Ushort index);
-int sortBubble(short arr[], Ushort size, Ushort index);
+sortingState sortInsertion(short arr[], Ushort size, Ushort index);
+sortingState sortSelection(short arr[], Ushort size, Ushort index);
+sortingState sortBubble(short arr[], Ushort size, Ushort index);
 
 #endif
