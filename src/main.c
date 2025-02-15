@@ -96,10 +96,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	sprintf(strSortingInterval, "%d", sortingInterval);
 	algoTextName = SDL_malloc(strlen(strSortingFunctions[0]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1);
 	if (algoTextName == NULL) return SDL_APP_FAILURE;
-	strcpy(algoTextName, strSortingFunctions[0]);
-	strcat(algoTextName, " - delay ");
-	strcat(algoTextName, strSortingInterval);
-	strcat(algoTextName, " ms");
+	snprintf(algoTextName, strlen(strSortingFunctions[0]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1, "%s - delay %s ms", strSortingFunctions[algoChoosen], strSortingInterval);
 	topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));
 
 	sortingTimer = SDL_GetTicks();
@@ -154,10 +151,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 						for (Ushort i = 0; i < ARR_SIZE; ++i) arr[i] = abs(arr[i]);
 						algoTextName = SDL_realloc(algoTextName, strlen(strSortingFunctions[i]) + strlen(" - delay  ms") + strlen(strSortingInterval) + 1);
 						if (algoTextName == NULL) return SDL_APP_FAILURE;
-						strcpy(algoTextName, strSortingFunctions[i]);
-						strcat(algoTextName, " - delay ");
-						strcat(algoTextName, strSortingInterval);
-						strcat(algoTextName, " ms");
+						snprintf(algoTextName, strlen(strSortingFunctions[i]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1, "%s - delay %s ms", strSortingFunctions[algoChoosen], strSortingInterval);
 						topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));	
 						shuffle(arr, ARR_SIZE);
 					}
