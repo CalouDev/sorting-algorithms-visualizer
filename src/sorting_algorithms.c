@@ -50,3 +50,13 @@ sortingState sortBubble(short arr[], Ushort size, Ushort index) {
 	return swapped;
 }
 
+sortingState sortMerge(short arr[], Ushort size, Ushort index) {
+	for (Ushort i = 0; i < size - 1; i += index * 2) {
+		Ushort mid = min(i + index - 1, size - 1);
+		Ushort right = min(i + 2 * index - 1, size -1);
+
+		mergeSubArr(arr, i, right, mid);
+	}
+
+	return SORTING_CONTINUE;
+}
