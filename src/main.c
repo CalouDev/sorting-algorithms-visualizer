@@ -3,6 +3,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_ttf.h>
 #include <SDL3/SDL_mixer.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
@@ -34,6 +35,7 @@ char* fontPath;
 sortingState isSorted;
 
 Ushort sortingInterval = 75;
+char strSortingInterval[4]; // max size of the interval : 9999 ms
 
 // Sorting Algos vars
 
@@ -89,12 +91,15 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	defaultCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
 	
 	SDL_asprintf(&fontPath, "%s/../font/%s", SDL_GetBasePath(), "sans.ttf");
+
 	font = TTF_OpenFont(fontPath, 25);
-	
-	algoTextName = SDL_malloc(strlen(strSortingFunctions[0]) + strlen(" - Delay 75 ms") + 1);
+	sprintf(strSortingInterval, "%d", sortingInterval);
+	algoTextName = SDL_malloc(strlen(strSortingFunctions[0]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1);
 	if (algoTextName == NULL) return SDL_APP_FAILURE;
 	strcpy(algoTextName, strSortingFunctions[0]);
-	strcat(algoTextName, " - delay 75 ms");
+	strcat(algoTextName, " - delay ");
+	strcat(algoTextName, strSortingInterval);
+	strcat(algoTextName, " ms");
 	topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));
 
 	sortingTimer = SDL_GetTicks();
@@ -145,11 +150,14 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 						isSorted = SORTING_CONTINUE;
 						greenPassingIndex = -1;
 						algoChoosen = i;
+						sprintf(strSortingInterval, "%d", sortingInterval);
 						for (Ushort i = 0; i < ARR_SIZE; ++i) arr[i] = abs(arr[i]);
-						algoTextName = SDL_realloc(algoTextName, strlen(strSortingFunctions[i]) + strlen(" - delay 75 ms") + 1);
+						algoTextName = SDL_realloc(algoTextName, strlen(strSortingFunctions[i]) + strlen(" - delay  ms") + strlen(strSortingInterval) + 1);
 						if (algoTextName == NULL) return SDL_APP_FAILURE;
 						strcpy(algoTextName, strSortingFunctions[i]);
-						strcat(algoTextName, " - delay 75 ms");
+						strcat(algoTextName, " - delay ");
+						strcat(algoTextName, strSortingInterval);
+						strcat(algoTextName, " ms");
 						topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));	
 						shuffle(arr, ARR_SIZE);
 					}
