@@ -61,6 +61,12 @@ char* algoTextName;
 
 Button incrementDelayButton;
 Button decrementDelayButton;
+const SDL_Vertex incrementDelayButtonTriangleVertices[3] = {{{1240, 302}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}},
+															{{1232, 318}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}},
+															{{1248, 318}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}}};
+const SDL_Vertex decrementDelayButtonTriangleVertices[3] = {{{1232, 327}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}},
+															{{1248, 327}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}},
+															{{1240, 343}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}}};
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	srand(time(NULL));
@@ -256,6 +262,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 		TTF_SetTextColor(buttonsText[i], 0, 0, 0, SDL_ALPHA_OPAQUE);
 		TTF_DrawRendererText(buttonsText[i], 1060, 20 + 60 * i);
 	}
+
+	SDL_RenderGeometry(renderer, NULL, incrementDelayButtonTriangleVertices, 3, NULL, 3);
+	SDL_RenderGeometry(renderer, NULL, decrementDelayButtonTriangleVertices, 3, NULL, 3);
 
 	if (elementHovered) SDL_SetCursor(handCursor);
 	else SDL_SetCursor(defaultCursor);
