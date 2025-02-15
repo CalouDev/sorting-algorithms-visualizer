@@ -12,7 +12,6 @@
 
 #define WIN_W 1280
 #define WIN_H 640
-#define SORTING_INTERVAL 25
 #define GREEN_EFFECT_INTERVAL 2 
 #define ARR_SIZE 250 
 #define N_ALGOS 4
@@ -33,6 +32,8 @@ Ushort algoChoosen = 0;
 char* fontPath;
 
 sortingState isSorted;
+
+Ushort sortingInterval = 75;
 
 // Sorting Algos vars
 
@@ -207,7 +208,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 		SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - abs(arr[i]) * 2, 4, WIN_H});
 	}
 
-	if (sorting && SDL_GetTicks() > sortingTimer + SORTING_INTERVAL) {
+	if (sorting && SDL_GetTicks() > sortingTimer + sortingInterval) {
 		for (Ushort i = 0; i < ARR_SIZE; ++i) { arr[i] = abs(arr[i]); }
 		isSorted = sortingFunctions[algoChoosen](arr, ARR_SIZE, indexSorting);
 		if (algoChoosen != 3) indexSorting++;
