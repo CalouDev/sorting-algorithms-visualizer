@@ -14,7 +14,11 @@ void shuffle(Ushort arr[], Ushort size) {
     }
 }
 
-void mergeSubArr(Ushort arr[], Ushort l, Ushort r, Ushort m) {
+Ushort min(Ushort a, Ushort b) {
+	return (a < b) ? a : b;
+}
+
+void mergeSubArr(short arr[], Ushort l, Ushort r, Ushort m) {
 	Ushort i, j, k;
 	Ushort leftSize = m - l + 1, rightSize = r - m;
 	Ushort* leftArr = malloc(leftSize * sizeof(Ushort));
