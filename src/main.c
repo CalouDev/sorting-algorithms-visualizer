@@ -35,7 +35,7 @@ char* fontPath;
 sortingState isSorted;
 
 Ushort sortingInterval = 75;
-char strSortingInterval[4]; // max size of the interval : 9999 ms
+char strSortingInterval[4]; // max size of the interval : 999 ms
 
 // Sorting Algos vars
 
@@ -58,6 +58,9 @@ TTF_Font *font;
 TTF_TextEngine* textEngine;
 TTF_Text* topLeftText;
 char* algoTextName;
+
+Button incrementDelayButton;
+Button decrementDelayButton;
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	srand(time(NULL));
@@ -102,6 +105,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	sortingTimer = SDL_GetTicks();
 	greenTimer = SDL_GetTicks();
 
+	incrementDelayButton = createButton(1230, 300, 20, 20);
+	decrementDelayButton = createButton(1230, 325, 20, 20);
+
 	for (int i = 0; i < N_ALGOS; ++i) {
 		buttons[i] = createButton(1050, 10 + 60 * i, 200, 50);
 		buttonsText[i] = TTF_CreateText(textEngine, font, strSortingFunctions[i], strlen(strSortingFunctions[i]));
@@ -132,6 +138,9 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 			return SDL_APP_SUCCESS;
 		case SDL_EVENT_MOUSE_MOTION:
 			elementHovered = false;
+			incrementDelayButton.hovered = isHovered(incrementDelayButton.box, event->motion.x, event->motion.y);
+			decrementDelayButton.hovered = isHovered(decrementDelayButton.box, event->motion.x, event->motion.y);
+			if (incrementDelayButton.hovered || decrementDelayButton.hovered) elementHovered = true;
 			for (int i = 0; i < N_ALGOS; ++i) {
 				buttons[i].hovered = isHovered(buttons[i].box, event->motion.x, event->motion.y); 
 				if (buttons[i].hovered) elementHovered = true;
@@ -140,26 +149,37 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 			break;
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 			if (event->button.button == SDL_BUTTON_LEFT) {
-				for (int i = 0; i < N_ALGOS; ++i) {
-					if (buttons[i].hovered) {
-						buttons[i].pressed = true;
-						sorting = false;
-						isSorted = SORTING_CONTINUE;
-						greenPassingIndex = -1;
-						algoChoosen = i;
-						sprintf(strSortingInterval, "%d", sortingInterval);
-						for (Ushort i = 0; i < ARR_SIZE; ++i) arr[i] = abs(arr[i]);
-						algoTextName = SDL_realloc(algoTextName, strlen(strSortingFunctions[i]) + strlen(" - delay  ms") + strlen(strSortingInterval) + 1);
-						if (algoTextName == NULL) return SDL_APP_FAILURE;
-						snprintf(algoTextName, strlen(strSortingFunctions[i]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1, "%s - delay %s ms", strSortingFunctions[algoChoosen], strSortingInterval);
-						topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));	
-						shuffle(arr, ARR_SIZE);
+				if (incrementDelayButton.hovered) {
+					incrementDelayButton.pressed = true;
+					if (sortingInterval < 974) sortingInterval += 25;
+				} else if (decrementDelayButton.hovered) {
+					decrementDelayButton.pressed = true;
+					if (sortingInterval > 25) sortingInterval -= 25;
+				} else {
+					for (int i = 0; i < N_ALGOS; ++i) {
+						if (buttons[i].hovered) {
+							buttons[i].pressed = true;
+							sorting = false;
+							isSorted = SORTING_CONTINUE;
+							greenPassingIndex = -1;
+							algoChoosen = i;
+							for (Ushort j = 0; j < ARR_SIZE; ++j) arr[j] = abs(arr[j]);
+							shuffle(arr, ARR_SIZE);
+						}
 					}
 				}
+
+				sprintf(strSortingInterval, "%d", sortingInterval);
+				algoTextName = SDL_realloc(algoTextName, strlen(strSortingFunctions[algoChoosen]) + strlen(" - delay  ms") + strlen(strSortingInterval) + 1);
+				if (algoTextName == NULL) return SDL_APP_FAILURE;
+				snprintf(algoTextName, strlen(strSortingFunctions[algoChoosen]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1, "%s - delay %s ms", strSortingFunctions[algoChoosen], strSortingInterval);
+				topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));
 			}
 			break;
 		case SDL_EVENT_MOUSE_BUTTON_UP:
 			if (event->button.button == SDL_BUTTON_LEFT) {
+				if (incrementDelayButton.pressed) incrementDelayButton.pressed = false;
+				if (decrementDelayButton.pressed) decrementDelayButton.pressed = false;
 				for (int i = 0; i < N_ALGOS; ++i) 
 					if (buttons[i].pressed) buttons[i].pressed = false;
 			}
@@ -227,6 +247,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 		greenPassingIndex++;
 		greenTimer = SDL_GetTicks();
 	}
+
+	renderButton(renderer, &incrementDelayButton);
+	renderButton(renderer, &decrementDelayButton);
 
 	for (int i = 0; i < N_ALGOS; ++i) {
 		renderButton(renderer, &buttons[i]);
