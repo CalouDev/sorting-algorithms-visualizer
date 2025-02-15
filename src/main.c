@@ -12,9 +12,9 @@
 
 #define WIN_W 1280
 #define WIN_H 640
-#define SORTING_INTERVAL 75
-#define GREEN_EFFECT_INTERVAL 10 
-#define ARR_SIZE 100
+#define SORTING_INTERVAL 25
+#define GREEN_EFFECT_INTERVAL 2 
+#define ARR_SIZE 250 
 #define N_ALGOS 4
 
 static SDL_Window *window = NULL;
@@ -193,18 +193,18 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
 	if (greenPassingIndex >= 0) {
 		SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
-		for (short i = 0; i <= greenPassingIndex - 1; ++i) SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - abs(arr[i]) * 6);
+		for (short i = 0; i <= greenPassingIndex - 1; ++i)  SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - abs(arr[i]) * 2, 4, abs(arr[i]) * 2});
 
 		if (greenPassingIndex <= ARR_SIZE-1) {
 			SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-			SDL_RenderLine(renderer, 10 + greenPassingIndex * 10, WIN_H, 10 + greenPassingIndex * 10, WIN_H - abs(arr[greenPassingIndex]) * 6);
+			SDL_RenderFillRect(renderer, &(SDL_FRect){1 + greenPassingIndex * 4, WIN_H - abs(arr[greenPassingIndex]) * 2, 4, WIN_H});
 		}
 	}
 
 	for (Ushort i = greenPassingIndex + 1; i < ARR_SIZE; ++i) {
 		if (arr[i] < 0) SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
 		else SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-		SDL_RenderLine(renderer, 10 + i * 10, WIN_H, 10 + i * 10, WIN_H - abs(arr[i]) * 6);
+		SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - abs(arr[i]) * 2, 4, WIN_H});
 	}
 
 	if (sorting && SDL_GetTicks() > sortingTimer + SORTING_INTERVAL) {
