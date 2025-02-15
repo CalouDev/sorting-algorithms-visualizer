@@ -15,7 +15,7 @@
 #define SORTING_INTERVAL 75
 #define GREEN_EFFECT_INTERVAL 10 
 #define ARR_SIZE 100
-#define N_ALGOS 5
+#define N_ALGOS 4
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -36,9 +36,9 @@ sortingState isSorted;
 
 // Sorting Algos vars
 
-const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Merge Sort", "Quick Sort"};
+const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Merge Sort"};
 TTF_Text* buttonsText[N_ALGOS];
-sortingState (*sortingFunctions[N_ALGOS])(short[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortSelection, sortSelection};
+sortingState (*sortingFunctions[N_ALGOS])(short[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortMerge};
 
 short greenPassingIndex = -1;
 
@@ -165,7 +165,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 			switch (event->key.scancode) {
 				case SDL_SCANCODE_SPACE:
 					if (!sorting) {
-						if (algoChoosen == 0) indexSorting = 1;
+						if (algoChoosen == 0 || algoChoosen == 3) indexSorting = 1;
 						else if (algoChoosen == 1 || algoChoosen == 2) indexSorting = 0;
 						sortingTimer = SDL_GetTicks();
 						sorting = true;
@@ -210,7 +210,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 	if (sorting && SDL_GetTicks() > sortingTimer + SORTING_INTERVAL) {
 		for (Ushort i = 0; i < ARR_SIZE; ++i) { arr[i] = abs(arr[i]); }
 		isSorted = sortingFunctions[algoChoosen](arr, ARR_SIZE, indexSorting);
-		indexSorting++;
+		if (algoChoosen != 3) indexSorting++;
+		else indexSorting *= 2;
 		if (isSorted == SORTING_STOP || indexSorting >= ARR_SIZE) {
 			sorting = false;
 			greenPassingIndex = 0;
