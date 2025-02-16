@@ -15,7 +15,7 @@
 #define WIN_H 640
 #define GREEN_EFFECT_INTERVAL 2 
 #define ARR_SIZE 250 
-#define N_ALGOS 4
+#define N_ALGOS 5
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -39,9 +39,9 @@ char strSortingInterval[4]; // max size of the interval : 999 ms
 
 // Sorting Algos vars
 
-const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Merge Sort"};
+const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Merge Sort", "Quick Sort"};
 TTF_Text* buttonsText[N_ALGOS];
-sortingState (*sortingFunctions[N_ALGOS])(short[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortMerge};
+sortingState (*sortingFunctions[N_ALGOS])(short[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortMerge, sortMerge};
 
 short greenPassingIndex = -1;
 
@@ -59,14 +59,16 @@ TTF_TextEngine* textEngine;
 TTF_Text* topLeftText;
 char* algoTextName;
 
+char* strDelayText;
+TTF_Text* delayText;
 Button incrementDelayButton;
 Button decrementDelayButton;
-const SDL_Vertex incrementDelayButtonTriangleVertices[3] = {{{1240, 302}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}},
-															{{1232, 318}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}},
-															{{1248, 318}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}}};
-const SDL_Vertex decrementDelayButtonTriangleVertices[3] = {{{1232, 327}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}},
-															{{1248, 327}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}},
-															{{1240, 343}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}}};
+const SDL_Vertex incrementDelayButtonTriangleVertices[3] = {{{1240, 312}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}},
+															{{1232, 328}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}},
+															{{1248, 328}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}}};
+const SDL_Vertex decrementDelayButtonTriangleVertices[3] = {{{1232, 337}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}},
+															{{1248, 337}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}},
+															{{1240, 353}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}}};
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	srand(time(NULL));
@@ -104,15 +106,18 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	font = TTF_OpenFont(fontPath, 25);
 	sprintf(strSortingInterval, "%d", sortingInterval);
 	algoTextName = SDL_malloc(strlen(strSortingFunctions[0]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1);
+	strDelayText = SDL_malloc(strlen("Delay : ") + strlen(strSortingInterval) + 1);
 	if (algoTextName == NULL) return SDL_APP_FAILURE;
 	snprintf(algoTextName, strlen(strSortingFunctions[0]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1, "%s - delay %s ms", strSortingFunctions[algoChoosen], strSortingInterval);
+	snprintf(strDelayText, strlen("Delay : ") + strlen(strSortingInterval) + 1, "Delay : %s", strSortingInterval);
+	delayText = TTF_CreateText(textEngine, font, strDelayText, strlen(strDelayText));
 	topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));
 
 	sortingTimer = SDL_GetTicks();
 	greenTimer = SDL_GetTicks();
 
-	incrementDelayButton = createButton(1230, 300, 20, 20);
-	decrementDelayButton = createButton(1230, 325, 20, 20);
+	incrementDelayButton = createButton(1230, 310, 20, 20);
+	decrementDelayButton = createButton(1230, 335, 20, 20);
 
 	for (int i = 0; i < N_ALGOS; ++i) {
 		buttons[i] = createButton(1050, 10 + 60 * i, 200, 50);
@@ -129,6 +134,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result) {
     window = NULL;
 	SDL_free(fontPath);
 	SDL_free(algoTextName);
+	SDL_free(strDelayText);
 	for (int i = 0; i < N_ALGOS; ++i) TTF_DestroyText(buttonsText[i]);
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	SDL_Quit();
@@ -178,8 +184,12 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 				sprintf(strSortingInterval, "%d", sortingInterval);
 				algoTextName = SDL_realloc(algoTextName, strlen(strSortingFunctions[algoChoosen]) + strlen(" - delay  ms") + strlen(strSortingInterval) + 1);
 				if (algoTextName == NULL) return SDL_APP_FAILURE;
+				strDelayText = SDL_realloc(strDelayText, strlen("Delay : ") + strlen(strSortingInterval) + 1);
+				if (strDelayText == NULL) return SDL_APP_FAILURE;
 				snprintf(algoTextName, strlen(strSortingFunctions[algoChoosen]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1, "%s - delay %s ms", strSortingFunctions[algoChoosen], strSortingInterval);
+				snprintf(strDelayText, strlen("Delay : ") + strlen(strSortingInterval) + 1, "Delay : %s", strSortingInterval);
 				topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));
+				delayText = TTF_CreateText(textEngine, font, strDelayText, strlen(strDelayText));
 			}
 			break;
 		case SDL_EVENT_MOUSE_BUTTON_UP:
@@ -194,8 +204,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 			switch (event->key.scancode) {
 				case SDL_SCANCODE_SPACE:
 					if (!sorting) {
-						if (algoChoosen == 0 || algoChoosen == 3) indexSorting = 1;
-						else if (algoChoosen == 1 || algoChoosen == 2) indexSorting = 0;
+						indexSorting = (algoChoosen == 0 || algoChoosen == 3) ? 1 : 0;
 						sortingTimer = SDL_GetTicks();
 						sorting = true;
 					}
@@ -219,6 +228,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
 	TTF_SetTextColor(topLeftText, 255, 255, 255, SDL_ALPHA_OPAQUE);
 	TTF_DrawRendererText(topLeftText, 10, 10);
+	TTF_DrawRendererText(delayText, 1050, 315);
 
 	if (greenPassingIndex >= 0) {
 		SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
