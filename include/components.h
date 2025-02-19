@@ -1,7 +1,7 @@
-#include <SDL3/SDL.h>
-
 #ifndef COMPONENTS
 #define COMPONENTS
+
+#include <SDL3/SDL.h>
 
 typedef struct {
 	SDL_FRect box;
