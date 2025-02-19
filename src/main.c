@@ -2,8 +2,7 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL_ttf.h>
 #include <SDL3/SDL_mixer.h>
-#include<time.h>
-#include <stdio.h>
+#include <time.h>
 #include "../include/sorting_algorithms.h"
 #include "../include/utils.h"
 #include "../include/components.h"
