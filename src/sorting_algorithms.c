@@ -1,6 +1,5 @@
 #include "../include/sorting_algorithms.h"
 #include "../include/utils.h"
-#include <stdlib.h>
 
 sortingState sortInsertion(short arr[], Ushort size, Ushort index) {
 	short currentElement = arr[index];
@@ -39,7 +38,7 @@ sortingState sortSelection(short arr[], Ushort size, Ushort index) {
 sortingState sortBubble(short arr[], Ushort size, Ushort index) {
 	sortingState swapped = SORTING_STOP;
 	for (Ushort j = 0; j < size - index - 1; ++j) {
-		if (abs(arr[j]) > abs(arr[j+1])) {
+		if (SDL_abs(arr[j]) > SDL_abs(arr[j+1])) {
 			swap(&arr[j], &arr[j+1]);
 			arr[j] = -arr[j];
 			arr[j+1] = -arr[j+1];
@@ -60,3 +59,4 @@ sortingState sortMerge(short arr[], Ushort size, Ushort index) {
 
 	return SORTING_CONTINUE;
 }
+
