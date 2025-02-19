@@ -1,6 +1,8 @@
 #ifndef UTILS
 #define UTILS
 
+#include <SDL3/SDL.h>
+
 typedef unsigned short Ushort;
 
 void swap(Ushort *a, Ushort *b);
