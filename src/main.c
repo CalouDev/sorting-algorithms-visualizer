@@ -1,12 +1,9 @@
 #define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>
-#include <SDL3/SDL.h>
 #include <SDL3/SDL_ttf.h>
 #include <SDL3/SDL_mixer.h>
+#include<time.h>
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
 #include "../include/sorting_algorithms.h"
 #include "../include/utils.h"
 #include "../include/components.h"
@@ -15,7 +12,8 @@
 #define WIN_H 640
 #define GREEN_EFFECT_INTERVAL 2 
 #define ARR_SIZE 250 
-#define N_ALGOS 5
+#define N_ALGOS 4
+#define DELAY_MAX_LIM_N 4
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -35,13 +33,13 @@ char* fontPath;
 sortingState isSorted;
 
 Ushort sortingInterval = 75;
-char strSortingInterval[4]; // max size of the interval : 999 ms
+char strSortingInterval[DELAY_MAX_LIM_N];
 
 // Sorting Algos vars
 
-const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Merge Sort", "Quick Sort"};
+const char* strSortingFunctions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Merge Sort"};
 TTF_Text* buttonsText[N_ALGOS];
-sortingState (*sortingFunctions[N_ALGOS])(short[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortMerge, sortMerge};
+sortingState (*sortingFunctions[N_ALGOS])(short[], Ushort, Ushort) = {sortInsertion, sortSelection, sortBubble, sortMerge};
 
 short greenPassingIndex = -1;
 
@@ -71,12 +69,11 @@ const SDL_Vertex decrementDelayButtonTriangleVertices[3] = {{{1232, 337}, {0.4, 
 															{{1240, 353}, {0.4, 0.4, 0.4, SDL_ALPHA_OPAQUE}}};
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
-	srand(time(NULL));
+	SDL_srand(time(NULL));
 
 	// Filling the array
 
-	for (Ushort i = 1; i <= ARR_SIZE; ++i)
-		arr[i-1] = i;
+	for (Ushort i = 1; i <= ARR_SIZE; ++i) arr[i-1] = i;
 
 	shuffle(arr, ARR_SIZE);
 
@@ -102,14 +99,13 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 	defaultCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
 	
 	SDL_asprintf(&fontPath, "%s/../font/%s", SDL_GetBasePath(), "sans.ttf");
-
 	font = TTF_OpenFont(fontPath, 25);
-	sprintf(strSortingInterval, "%d", sortingInterval);
+	SDL_snprintf(strSortingInterval, DELAY_MAX_LIM_N + 1, "%d", sortingInterval);
 	algoTextName = SDL_malloc(strlen(strSortingFunctions[0]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1);
 	strDelayText = SDL_malloc(strlen("Delay : ") + strlen(strSortingInterval) + 1);
 	if (algoTextName == NULL) return SDL_APP_FAILURE;
-	snprintf(algoTextName, strlen(strSortingFunctions[0]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1, "%s - delay %s ms", strSortingFunctions[algoChoosen], strSortingInterval);
-	snprintf(strDelayText, strlen("Delay : ") + strlen(strSortingInterval) + 1, "Delay : %s", strSortingInterval);
+	SDL_snprintf(algoTextName, strlen(strSortingFunctions[0]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1, "%s - delay %s ms", strSortingFunctions[algoChoosen], strSortingInterval);
+	SDL_snprintf(strDelayText, strlen("Delay : ") + strlen(strSortingInterval) + 1, "Delay : %s", strSortingInterval);
 	delayText = TTF_CreateText(textEngine, font, strDelayText, strlen(strDelayText));
 	topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));
 
@@ -175,19 +171,19 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 							isSorted = SORTING_CONTINUE;
 							greenPassingIndex = -1;
 							algoChoosen = i;
-							for (Ushort j = 0; j < ARR_SIZE; ++j) arr[j] = abs(arr[j]);
+							for (Ushort j = 0; j < ARR_SIZE; ++j) arr[j] = SDL_abs(arr[j]);
 							shuffle(arr, ARR_SIZE);
 						}
 					}
 				}
 
-				sprintf(strSortingInterval, "%d", sortingInterval);
+				SDL_snprintf(strSortingInterval, DELAY_MAX_LIM_N + 1, "%d", sortingInterval);
 				algoTextName = SDL_realloc(algoTextName, strlen(strSortingFunctions[algoChoosen]) + strlen(" - delay  ms") + strlen(strSortingInterval) + 1);
 				if (algoTextName == NULL) return SDL_APP_FAILURE;
 				strDelayText = SDL_realloc(strDelayText, strlen("Delay : ") + strlen(strSortingInterval) + 1);
 				if (strDelayText == NULL) return SDL_APP_FAILURE;
-				snprintf(algoTextName, strlen(strSortingFunctions[algoChoosen]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1, "%s - delay %s ms", strSortingFunctions[algoChoosen], strSortingInterval);
-				snprintf(strDelayText, strlen("Delay : ") + strlen(strSortingInterval) + 1, "Delay : %s", strSortingInterval);
+				SDL_snprintf(algoTextName, strlen(strSortingFunctions[algoChoosen]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1, "%s - delay %s ms", strSortingFunctions[algoChoosen], strSortingInterval);
+				SDL_snprintf(strDelayText, strlen("Delay : ") + strlen(strSortingInterval) + 1, "Delay : %s", strSortingInterval);
 				topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));
 				delayText = TTF_CreateText(textEngine, font, strDelayText, strlen(strDelayText));
 			}
@@ -232,22 +228,22 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
 	if (greenPassingIndex >= 0) {
 		SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
-		for (short i = 0; i <= greenPassingIndex - 1; ++i)  SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - abs(arr[i]) * 2, 4, abs(arr[i]) * 2});
+		for (short i = 0; i <= greenPassingIndex - 1; ++i)  SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - SDL_abs(arr[i]) * 2, 4, SDL_abs(arr[i]) * 2});
 
 		if (greenPassingIndex <= ARR_SIZE-1) {
 			SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-			SDL_RenderFillRect(renderer, &(SDL_FRect){1 + greenPassingIndex * 4, WIN_H - abs(arr[greenPassingIndex]) * 2, 4, WIN_H});
+			SDL_RenderFillRect(renderer, &(SDL_FRect){1 + greenPassingIndex * 4, WIN_H - SDL_abs(arr[greenPassingIndex]) * 2, 4, WIN_H});
 		}
 	}
 
 	for (Ushort i = greenPassingIndex + 1; i < ARR_SIZE; ++i) {
 		if (arr[i] < 0) SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
 		else SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-		SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - abs(arr[i]) * 2, 4, WIN_H});
+		SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - SDL_abs(arr[i]) * 2, 4, WIN_H});
 	}
 
 	if (sorting && SDL_GetTicks() > sortingTimer + sortingInterval) {
-		for (Ushort i = 0; i < ARR_SIZE; ++i) { arr[i] = abs(arr[i]); }
+		for (Ushort i = 0; i < ARR_SIZE; ++i) { arr[i] = SDL_abs(arr[i]); }
 		isSorted = sortingFunctions[algoChoosen](arr, ARR_SIZE, indexSorting);
 		if (algoChoosen != 3) indexSorting++;
 		else indexSorting *= 2;
