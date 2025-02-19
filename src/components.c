@@ -1,5 +1,4 @@
 #include "../include/components.h"
-#include <stdlib.h>
 
 Button createButton(float x, float y, float w, float h) {
     return (Button) {
@@ -24,3 +23,4 @@ void renderButton(SDL_Renderer* renderer, Button* but) {
 bool isHovered(SDL_FRect box, float mouseX, float mouseY) {
 	return (mouseX >= box.x && mouseX <= box.x + box.w && mouseY >= box.y && mouseY <= box.y + box.h);
 }
+
