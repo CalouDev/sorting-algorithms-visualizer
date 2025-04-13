@@ -1,28 +1,44 @@
 #include "../include/utils.h"
 
-void swap(Ushort *a, Ushort *b) {
-	Ushort temp = *a;
+SDL_AppResult checkAllocation(const void* ptr) {
+	SDL_AppResult state;
+
+	state = SDL_APP_CONTINUE;
+
+	if (NULL == ptr) state = SDL_APP_FAILURE;
+
+	return state;
+}
+
+void swap(short *a, short *b) {
+	uint16_t temp;
+	
+	temp = *a;
 	*a = *b;
 	*b = temp;
 }
 
-void shuffle(Ushort arr[], Ushort size) {
-    for (int i = size - 1; i > 0; i--) {
-        int j = SDL_rand(size) % (i + 1);
-        swap(&arr[i], &arr[j]);
+void shuffle(short arr[], uint16_t size) {
+	int i, randomIndex;
+
+    for (i = size - 1; i > 0; i--) {
+        randomIndex = SDL_rand(size) % (i + 1);
+        swap(&arr[i], &arr[randomIndex]);
     }
 }
 
-Ushort min(Ushort a, Ushort b) {
-	return (a < b) ? a : b;
-}
+void mergeSubArr(short arr[], uint16_t l, uint16_t r, uint16_t m) {
+	uint16_t i, j, k, leftSize, rightSize;
+	uint16_t *leftArr, *rightArr;
 
-void mergeSubArr(short arr[], Ushort l, Ushort r, Ushort m) {
-	Ushort i, j, k;
-	Ushort leftSize = m - l + 1, rightSize = r - m;
-	Ushort* leftArr = SDL_malloc(leftSize * sizeof(Ushort));
-	Ushort* rightArr = SDL_malloc(rightSize * sizeof(Ushort));
+	leftSize = m - l + 1;
+	rightSize = r - m;
+	leftArr = SDL_malloc(leftSize * sizeof(uint16_t));
+	rightArr = SDL_malloc(rightSize * sizeof(uint16_t));
 
+	checkAllocation(leftArr);
+	checkAllocation(rightArr);
+	
 	for (i = 0; i < leftSize; ++i) leftArr[i] = arr[l + i];
 	for (j = 0; j < rightSize; ++j) rightArr[j] = arr[m + j + 1];
 
@@ -44,4 +60,3 @@ void mergeSubArr(short arr[], Ushort l, Ushort r, Ushort m) {
 	SDL_free(leftArr);
 	SDL_free(rightArr);
 }
-

@@ -9,18 +9,18 @@ Button createButton(float x, float y, float w, float h) {
     };
 }
 
-void renderButton(SDL_Renderer* renderer, Button* but) {
-	SDL_Color c = but->clr;
+void renderButton(SDL_Renderer* renderer, const Button* btn) {
+	SDL_Color c = btn->clr;
 
-	if (but->pressed) SDL_SetRenderDrawColor(renderer, c.r - 100, c.g - 100, c.b - 100, c.a - 100);
-	else if (but->hovered)	SDL_SetRenderDrawColor(renderer, c.r - 50, c.g - 50, c.b - 50, c.a);
+	if (btn->pressed) SDL_SetRenderDrawColor(renderer, c.r - 100, c.g - 100, c.b - 100, c.a);
+	else if (btn->hovered)	SDL_SetRenderDrawColor(renderer, c.r - 50, c.g - 50, c.b - 50, c.a);
 	else SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
 
-	SDL_RenderFillRect(renderer, &but->box);
-	SDL_RenderRect(renderer, &but->box);
+	SDL_RenderFillRect(renderer, &btn->box);
+	SDL_RenderRect(renderer, &btn->box);
 }
 
 bool isHovered(SDL_FRect box, float mouseX, float mouseY) {
-	return (mouseX >= box.x && mouseX <= box.x + box.w && mouseY >= box.y && mouseY <= box.y + box.h);
+	return ((mouseX >= box.x) && (mouseX <= box.x + box.w) && (mouseY >= box.y) && (mouseY <= box.y + box.h));
 }
 
