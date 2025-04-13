@@ -1,13 +1,11 @@
 #ifndef UTILS
 #define UTILS
 
-#include <SDL3/SDL.h>
+#include "globals.h"
 
-typedef unsigned short Ushort;
-
-void swap(Ushort *a, Ushort *b);
-void shuffle(Ushort arr[], Ushort size);
-Ushort min(Ushort a, Ushort b);
-void mergeSubArr(short arr[], Ushort l, Ushort r, Ushort m);
+SDL_AppResult checkAllocation(const void* ptr);
+void swap(short *a, short *b);
+void shuffle(short arr[], uint16_t size);
+void mergeSubArr(short arr[], uint16_t l, uint16_t r, uint16_t m);
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef COMPONENTS
 #define COMPONENTS
 
-#include <SDL3/SDL.h>
+#include "globals.h"
 
 typedef struct {
 	SDL_FRect box;
@@ -11,7 +11,7 @@ typedef struct {
 } Button;
 
 Button createButton(float x, float y, float w, float h);
-void renderButton(SDL_Renderer* renderer, Button* but);
+void renderButton(SDL_Renderer* renderer, const Button* btn);
 bool isHovered(SDL_FRect box, float mouseX, float mouseY);
 
 #endif

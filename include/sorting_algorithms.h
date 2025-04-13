@@ -1,14 +1,11 @@
 #ifndef SORTING_ALGORITHMS
 #define SORTING_ALGORITHMS
 
-#include <SDL3/SDL.h>
+#include "globals.h"
 
-typedef unsigned short Ushort;
-typedef enum {SORTING_STOP, SORTING_CONTINUE} sortingState;
-
-sortingState sortInsertion(short arr[], Ushort size, Ushort index);
-sortingState sortSelection(short arr[], Ushort size, Ushort index);
-sortingState sortBubble(short arr[], Ushort size, Ushort index);
-sortingState sortMerge(short arr[], Ushort size, Ushort index);
+SortingState sortInsertion(SortData* sort_data);
+SortingState sortSelection(SortData* sort_data);
+SortingState sortBubble(SortData* sort_data);
+SortingState sortMerge(SortData* sort_data);
 
 #endif
