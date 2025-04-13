@@ -30,43 +30,43 @@ SDL_AppResult SDL_AppInit(void **appstate __attribute__((unused)), int argc __at
 	for (uint16_t i = 1; i <= main_arr->size; ++i) main_arr->arr[i-1] = i;
 	shuffle(main_arr->arr, main_arr->size);
 
-	sortingTimer = SDL_GetTicks();
-	greenTimer = SDL_GetTicks();
+	sorting_timer = SDL_GetTicks();
+	green_timer = SDL_GetTicks();
 
-	strSortingInterval = SDL_malloc(DELAY_MAX_LIM_N + 1);
-	checkAllocation(strSortingInterval);
-	SDL_snprintf(strSortingInterval, DELAY_MAX_LIM_N + 1, "%d", sortingInterval);
+	str_sorting_interval = SDL_malloc(DELAY_MAX_LIM_N + 1);
+	checkAllocation(str_sorting_interval);
+	SDL_snprintf(str_sorting_interval, DELAY_MAX_LIM_N + 1, "%d", sorting_interval);
 
-	SDL_asprintf(&fontPath, "%s/../font/%s", SDL_GetBasePath(), "sans.ttf");
-	font = TTF_OpenFont(fontPath, 25);
+	SDL_asprintf(&font_path, "%s/../font/%s", SDL_GetBasePath(), "sans.ttf");
+	font = TTF_OpenFont(font_path, 25);
 	checkAllocation(font);
 
-	algoTextName = SDL_malloc(strlen(strSortingFunctions[0]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1);
-	checkAllocation(algoTextName);
-	strDelayText = SDL_malloc(strlen("Delay : ") + strlen(strSortingInterval) + 1);
-	checkAllocation(strDelayText);
-	SDL_snprintf(algoTextName, strlen(strSortingFunctions[0]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1, "%s - delay %s ms", strSortingFunctions[algoChoosen], strSortingInterval);
-	SDL_snprintf(strDelayText, strlen("Delay : ") + strlen(strSortingInterval) + 1, "Delay : %s", strSortingInterval);
+	algo_text_name = SDL_malloc(strlen(str_sorting_functions[0]) + strlen(" - Delay  ms") + strlen(str_sorting_interval) + 1);
+	checkAllocation(algo_text_name);
+	str_delay_text = SDL_malloc(strlen("Delay : ") + strlen(str_sorting_interval) + 1);
+	checkAllocation(str_delay_text);
+	SDL_snprintf(algo_text_name, strlen(str_sorting_functions[0]) + strlen(" - Delay  ms") + strlen(str_sorting_interval) + 1, "%s - delay %s ms", str_sorting_functions[algo_choosen], str_sorting_interval);
+	SDL_snprintf(str_delay_text, strlen("Delay : ") + strlen(str_sorting_interval) + 1, "Delay : %s", str_sorting_interval);
 
-	textEngine = TTF_CreateRendererTextEngine(renderer);
-	checkAllocation(textEngine);
-	delayText = TTF_CreateText(textEngine, font, strDelayText, strlen(strDelayText));
-	checkAllocation(delayText);
-	topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));
-	checkAllocation(topLeftText);
+	text_engine = TTF_CreateRendererTextEngine(renderer);
+	checkAllocation(text_engine);
+	delay_text = TTF_CreateText(text_engine, font, str_delay_text, strlen(str_delay_text));
+	checkAllocation(delay_text);
+	top_left_text = TTF_CreateText(text_engine, font, algo_text_name, strlen(algo_text_name));
+	checkAllocation(top_left_text);
 
-	handCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
-	checkAllocation(handCursor);
-	defaultCursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
-	checkAllocation(defaultCursor);
+	hand_cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
+	checkAllocation(hand_cursor);
+	default_cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
+	checkAllocation(default_cursor);
 
-	incrementDelayButton = createButton(1230, 310, 20, 20);
-	decrementDelayButton = createButton(1230, 335, 20, 20);
+	increment_delay_button = createButton(1230, 310, 20, 20);
+	decrement_delay_button = createButton(1230, 335, 20, 20);
 
 	for (uint16_t i = 0; i < N_ALGOS; ++i) {
 		buttons[i] = createButton(1050, 10 + 60 * i, 200, 50);
-		buttonsText[i] = TTF_CreateText(textEngine, font, strSortingFunctions[i], strlen(strSortingFunctions[i]));
-		checkAllocation(buttonsText[i]);
+		buttons_text[i] = TTF_CreateText(text_engine, font, str_sorting_functions[i], strlen(str_sorting_functions[i]));
+		checkAllocation(buttons_text[i]);
 	}
 
 	return SDL_APP_CONTINUE;
@@ -74,23 +74,26 @@ SDL_AppResult SDL_AppInit(void **appstate __attribute__((unused)), int argc __at
 
 void SDL_AppQuit(void *appstate __attribute__((unused)), SDL_AppResult result __attribute__((unused))) {
 	SDL_free(main_arr);
-	SDL_free(strSortingInterval);
+	main_arr = NULL;
+	SDL_free(str_sorting_interval);
+	str_sorting_interval = NULL;
     SDL_DestroyRenderer(renderer);
     renderer = NULL;
     SDL_DestroyWindow(window);
     window = NULL;
-	SDL_free(fontPath);
-	fontPath = NULL;
-	SDL_free(algoTextName);
-	algoTextName = NULL;
-	SDL_free(strDelayText);
-	strDelayText = NULL;
-	for (uint16_t i = 0; i < N_ALGOS; ++i) TTF_DestroyText(buttonsText[i]);
+	SDL_free(font_path);
+	font_path = NULL;
+	SDL_free(algo_text_name);
+	algo_text_name = NULL;
+	SDL_free(str_delay_text);
+	str_delay_text = NULL;
+	for (uint16_t i = 0; i < N_ALGOS; ++i) TTF_DestroyText(buttons_text[i]);
+
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	SDL_Quit();
 
-	TTF_DestroyGPUTextEngine(textEngine);
-	TTF_DestroyText(topLeftText);
+	TTF_DestroyGPUTextEngine(text_engine);
+	TTF_DestroyText(top_left_text);
 	TTF_Quit();
 }
 
@@ -99,53 +102,54 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 		case SDL_EVENT_QUIT:
 			return SDL_APP_SUCCESS;
 		case SDL_EVENT_MOUSE_MOTION:
-			elementHovered = false;
-			incrementDelayButton.hovered = isHovered(incrementDelayButton.box, event->motion.x, event->motion.y);
-			decrementDelayButton.hovered = isHovered(decrementDelayButton.box, event->motion.x, event->motion.y);
-			if (incrementDelayButton.hovered || decrementDelayButton.hovered) elementHovered = true;
+			element_hovered = false;
+			increment_delay_button.hovered = isHovered(increment_delay_button.box, event->motion.x, event->motion.y);
+			decrement_delay_button.hovered = isHovered(decrement_delay_button.box, event->motion.x, event->motion.y);
+			if (increment_delay_button.hovered || decrement_delay_button.hovered) element_hovered = true;
 			for (uint16_t i = 0; i < N_ALGOS; ++i) {
 				buttons[i].hovered = isHovered(buttons[i].box, event->motion.x, event->motion.y); 
-				if (buttons[i].hovered) elementHovered = true;
+				if (buttons[i].hovered) element_hovered = true;
 			}
 
 			break;
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 			if (event->button.button == SDL_BUTTON_LEFT) {
-				if (incrementDelayButton.hovered) {
-					incrementDelayButton.pressed = true;
-					if (sortingInterval < 974) sortingInterval += 25;
-				} else if (decrementDelayButton.hovered) {
-					decrementDelayButton.pressed = true;
-					if (sortingInterval > 25) sortingInterval -= 25;
+				if (increment_delay_button.hovered) {
+					increment_delay_button.pressed = true;
+					if (sorting_interval < 974) sorting_interval += 25;
+				} else if (decrement_delay_button.hovered) {
+					decrement_delay_button.pressed = true;
+					if (sorting_interval > 25) sorting_interval -= 25;
 				} else {
 					for (uint16_t i = 0; i < N_ALGOS; ++i) {
 						if (buttons[i].hovered) {
 							buttons[i].pressed = true;
 							sorting = false;
-							isSorted = SORTING_CONTINUE;
-							greenPassingIndex = -1;
-							algoChoosen = i;
+							is_sorted = SORTING_CONTINUE;
+							green_passing_index = -1;
+							algo_choosen = i;
 							for (uint16_t j = 0; j < main_arr->size; ++j) main_arr->arr[j] = SDL_abs(main_arr->arr[j]);
 							shuffle(main_arr->arr, main_arr->size);
 						}
 					}
 				}
 
-				SDL_snprintf(strSortingInterval, DELAY_MAX_LIM_N + 1, "%d", sortingInterval);
-				algoTextName = SDL_realloc(algoTextName, strlen(strSortingFunctions[algoChoosen]) + strlen(" - delay  ms") + strlen(strSortingInterval) + 1);
-				if (algoTextName == NULL) return SDL_APP_FAILURE;
-				strDelayText = SDL_realloc(strDelayText, strlen("Delay : ") + strlen(strSortingInterval) + 1);
-				if (strDelayText == NULL) return SDL_APP_FAILURE;
-				SDL_snprintf(algoTextName, strlen(strSortingFunctions[algoChoosen]) + strlen(" - Delay  ms") + strlen(strSortingInterval) + 1, "%s - delay %s ms", strSortingFunctions[algoChoosen], strSortingInterval);
-				SDL_snprintf(strDelayText, strlen("Delay : ") + strlen(strSortingInterval) + 1, "Delay : %s", strSortingInterval);
-				topLeftText = TTF_CreateText(textEngine, font, algoTextName, strlen(algoTextName));
-				delayText = TTF_CreateText(textEngine, font, strDelayText, strlen(strDelayText));
+				SDL_snprintf(str_sorting_interval, DELAY_MAX_LIM_N + 1, "%d", sorting_interval);
+				SDL_free(algo_text_name);
+				algo_text_name = SDL_malloc(strlen(str_sorting_functions[algo_choosen]) + strlen(" - delay  ms") + strlen(str_sorting_interval) + 1);
+				if (algo_text_name == NULL) return SDL_APP_FAILURE;
+				str_delay_text = SDL_realloc(str_delay_text, strlen("Delay : ") + strlen(str_sorting_interval) + 1);
+				if (str_delay_text == NULL) return SDL_APP_FAILURE;
+				SDL_snprintf(algo_text_name, strlen(str_sorting_functions[algo_choosen]) + strlen(" - Delay  ms") + strlen(str_sorting_interval) + 1, "%s - delay %s ms", str_sorting_functions[algo_choosen], str_sorting_interval);
+				SDL_snprintf(str_delay_text, strlen("Delay : ") + strlen(str_sorting_interval) + 1, "Delay : %s", str_sorting_interval);
+				top_left_text = TTF_CreateText(text_engine, font, algo_text_name, strlen(algo_text_name));
+				delay_text = TTF_CreateText(text_engine, font, str_delay_text, strlen(str_delay_text));
 			}
 			break;
 		case SDL_EVENT_MOUSE_BUTTON_UP:
 			if (event->button.button == SDL_BUTTON_LEFT) {
-				if (incrementDelayButton.pressed) incrementDelayButton.pressed = false;
-				if (decrementDelayButton.pressed) decrementDelayButton.pressed = false;
+				if (increment_delay_button.pressed) increment_delay_button.pressed = false;
+				if (decrement_delay_button.pressed) decrement_delay_button.pressed = false;
 				for (uint16_t i = 0; i < N_ALGOS; ++i) 
 					if (buttons[i].pressed) buttons[i].pressed = false;
 			}
@@ -154,8 +158,8 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 			switch (event->key.scancode) {
 				case SDL_SCANCODE_SPACE:
 					if (!sorting) {
-						main_arr->index = (algoChoosen == 0 || algoChoosen == 3) ? 1 : 0;
-						sortingTimer = SDL_GetTicks();
+						main_arr->index = (algo_choosen == 0 || algo_choosen == 3) ? 1 : 0;
+						sorting_timer = SDL_GetTicks();
 						sorting = true;
 					}
 					break;
@@ -171,63 +175,63 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate __attribute__((unused))) {
-	mouseData = SDL_GetMouseState(&mouseX, &mouseY);	
+	mouse_data = SDL_GetMouseState(&mouse_x, &mouse_y);
 
 	SDL_SetRenderDrawColor(renderer, 10, 10, 10, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
 
-	TTF_SetTextColor(topLeftText, 255, 255, 255, SDL_ALPHA_OPAQUE);
-	TTF_DrawRendererText(topLeftText, 10, 10);
-	TTF_DrawRendererText(delayText, 1050, 315);
+	TTF_SetTextColor(top_left_text, 255, 255, 255, 255);
+	TTF_DrawRendererText(top_left_text, 10, 10);
+	TTF_DrawRendererText(delay_text, 1050, 315);
 
-	if (greenPassingIndex >= 0) {
+	if (green_passing_index >= 0) {
 		SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
-		for (short i = 0; i <= greenPassingIndex - 1; ++i)  SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - SDL_abs(main_arr->arr[i]) * 2, 4, SDL_abs(main_arr->arr[i]) * 2});
+		for (short i = 0; i <= green_passing_index - 1; ++i)  SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - SDL_abs(main_arr->arr[i]) * 2, 4, SDL_abs(main_arr->arr[i]) * 2});
 
-		if (greenPassingIndex <= main_arr->size-1) {
+		if (green_passing_index <= main_arr->size-1) {
 			SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-			SDL_RenderFillRect(renderer, &(SDL_FRect){1 + greenPassingIndex * 4, WIN_H - SDL_abs(main_arr->arr[greenPassingIndex]) * 2, 4, WIN_H});
+			SDL_RenderFillRect(renderer, &(SDL_FRect){1 + green_passing_index * 4, WIN_H - SDL_abs(main_arr->arr[green_passing_index]) * 2, 4, WIN_H});
 		}
 	}
 
-	for (uint16_t i = greenPassingIndex + 1; i < main_arr->size; ++i) {
+	for (uint16_t i = green_passing_index + 1; i < main_arr->size; ++i) {
 		if (main_arr->arr[i] < 0) SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
 		else SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 		SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - SDL_abs(main_arr->arr[i]) * 2, 4, WIN_H});
 	}
 
-	if (sorting && SDL_GetTicks() > sortingTimer + sortingInterval) {
+	if (sorting && SDL_GetTicks() > sorting_timer + sorting_interval) {
 		for (uint16_t i = 0; i < main_arr->size; ++i) { main_arr->arr[i] = SDL_abs(main_arr->arr[i]); }
-		isSorted = sortingFunctions[algoChoosen](main_arr);
-		if (algoChoosen != 3) main_arr->index++;
+		is_sorted = sorting_functions[algo_choosen](main_arr);
+		if (algo_choosen != 3) main_arr->index++;
 		else main_arr->index *= 2;
-		if (isSorted == SORTING_STOP || main_arr->index >= main_arr->size) {
+		if (is_sorted == SORTING_STOP || main_arr->index >= main_arr->size) {
 			sorting = false;
-			greenPassingIndex = 0;
+			green_passing_index = 0;
 		}
 
-		sortingTimer = SDL_GetTicks();
+		sorting_timer = SDL_GetTicks();
 	}
 
-	if (greenPassingIndex >= 0 && greenPassingIndex < main_arr->size && SDL_GetTicks() > greenTimer + GREEN_EFFECT_INTERVAL) {
-		greenPassingIndex++;
-		greenTimer = SDL_GetTicks();
+	if (green_passing_index >= 0 && green_passing_index < main_arr->size && SDL_GetTicks() > green_timer + GREEN_EFFECT_INTERVAL) {
+		green_passing_index++;
+		green_timer = SDL_GetTicks();
 	}
 
-	renderButton(renderer, &incrementDelayButton);
-	renderButton(renderer, &decrementDelayButton);
+	renderButton(renderer, &increment_delay_button);
+	renderButton(renderer, &decrement_delay_button);
 
 	for (uint16_t i = 0; i < N_ALGOS; ++i) {
 		renderButton(renderer, &buttons[i]);
-		TTF_SetTextColor(buttonsText[i], 0, 0, 0, SDL_ALPHA_OPAQUE);
-		TTF_DrawRendererText(buttonsText[i], 1060, 20 + 60 * i);
+		TTF_SetTextColor(buttons_text[i], 0, 0, 0, SDL_ALPHA_OPAQUE);
+		TTF_DrawRendererText(buttons_text[i], 1060, 20 + 60 * i);
 	}
 
-	SDL_RenderGeometry(renderer, NULL, incrementDelayButtonTriangleVertices, 3, NULL, 3);
-	SDL_RenderGeometry(renderer, NULL, decrementDelayButtonTriangleVertices, 3, NULL, 3);
+	SDL_RenderGeometry(renderer, NULL, increment_delay_button_triangle_vertices, 3, NULL, 3);
+	SDL_RenderGeometry(renderer, NULL, decrement_delay_button_triangle_vertices, 3, NULL, 3);
 
-	if (elementHovered) SDL_SetCursor(handCursor);
-	else SDL_SetCursor(defaultCursor);
+	if (element_hovered) SDL_SetCursor(hand_cursor);
+	else SDL_SetCursor(default_cursor);
 
 	SDL_RenderPresent(renderer);
 
