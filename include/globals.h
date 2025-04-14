@@ -2,7 +2,6 @@
 #define GLOBALS
 
 #include <SDL3/SDL.h>
-#include <SDL3/SDL_mixer.h>
 #include <SDL3/SDL_ttf.h>
 #include <time.h>
 
