@@ -47,8 +47,8 @@ const SDL_Vertex decrement_delay_button_triangle_vertices[3] = {
 
 TTF_TextEngine* text_engine = NULL;
 TTF_Font* font = NULL;
-TTF_Text* top_left_text = NULL;
-TTF_Text* delay_text = NULL;
+TTF_Text* ttf_algo_text_name = NULL;
+TTF_Text* ttf_delay_text = NULL;
 TTF_Text* buttons_text[N_ALGOS];
 
 bool initializeSDL(void) {
@@ -87,27 +87,34 @@ bool initializeSDL(void) {
 }
 
 void initializeTextEngineTTF(void) {
+    size_t len_sorting_function0, len_sorting_interval, len_delay_text_begin, len_delay_text_end;
+
 	str_sorting_interval = SDL_malloc(DELAY_MAX_LIM_N + 1);
 	checkAllocation(str_sorting_interval);
 	SDL_snprintf(str_sorting_interval, DELAY_MAX_LIM_N + 1, "%d", sorting_interval);
 
-	SDL_asprintf(&font_path, "%s/../font/%s", SDL_GetBasePath(), "sans.ttf");
+    len_sorting_function0 = strlen(str_sorting_functions[0]);
+    len_delay_text_begin = strlen("Delay : ");
+    len_delay_text_end = strlen(" - Delay  ms");
+    len_sorting_interval = strlen(str_sorting_interval);
+
+	algo_text_name = SDL_malloc(len_sorting_function0 + len_delay_text_end + len_sorting_interval + 1);
+	checkAllocation(algo_text_name);
+	str_delay_text = SDL_malloc(len_delay_text_begin + len_sorting_interval + 1);
+	checkAllocation(str_delay_text);
+	SDL_snprintf(algo_text_name, len_sorting_function0 + len_delay_text_end + len_sorting_interval + 1, "%s - delay %s ms", str_sorting_functions[algo_choosen], str_sorting_interval);
+	SDL_snprintf(str_delay_text, len_delay_text_begin + len_sorting_interval + 1, "Delay : %s", str_sorting_interval);
+
+    SDL_asprintf(&font_path, "%s/../font/%s", SDL_GetBasePath(), "sans.ttf");
 	font = TTF_OpenFont(font_path, 25);
 	checkAllocation(font);
 
-	algo_text_name = SDL_malloc(strlen(str_sorting_functions[0]) + strlen(" - Delay  ms") + strlen(str_sorting_interval) + 1);
-	checkAllocation(algo_text_name);
-	str_delay_text = SDL_malloc(strlen("Delay : ") + strlen(str_sorting_interval) + 1);
-	checkAllocation(str_delay_text);
-	SDL_snprintf(algo_text_name, strlen(str_sorting_functions[0]) + strlen(" - Delay  ms") + strlen(str_sorting_interval) + 1, "%s - delay %s ms", str_sorting_functions[algo_choosen], str_sorting_interval);
-	SDL_snprintf(str_delay_text, strlen("Delay : ") + strlen(str_sorting_interval) + 1, "Delay : %s", str_sorting_interval);
-
 	text_engine = TTF_CreateRendererTextEngine(renderer);
 	checkAllocation(text_engine);
-	delay_text = TTF_CreateText(text_engine, font, str_delay_text, strlen(str_delay_text));
-	checkAllocation(delay_text);
-	top_left_text = TTF_CreateText(text_engine, font, algo_text_name, strlen(algo_text_name));
-	checkAllocation(top_left_text);
+	ttf_delay_text = TTF_CreateText(text_engine, font, str_delay_text, strlen(str_delay_text));
+	checkAllocation(ttf_delay_text);
+	ttf_algo_text_name = TTF_CreateText(text_engine, font, algo_text_name, strlen(algo_text_name));
+	checkAllocation(ttf_algo_text_name);
 
 	for (uint16_t i = 0; i < N_ALGOS; ++i) {
         buttons_text[i] = TTF_CreateText(text_engine, font, str_sorting_functions[i], strlen(str_sorting_functions[i]));
@@ -144,6 +151,7 @@ void freeAll(void) {
 	SDL_Quit();
 
 	TTF_DestroyGPUTextEngine(text_engine);
-	TTF_DestroyText(top_left_text);
+	TTF_DestroyText(ttf_algo_text_name);
+    TTF_DestroyText(ttf_delay_text);
 	TTF_Quit();
 }

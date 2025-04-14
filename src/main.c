@@ -57,13 +57,13 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 				SDL_snprintf(str_sorting_interval, DELAY_MAX_LIM_N + 1, "%d", sorting_interval);
 				SDL_free(algo_text_name);
 				algo_text_name = SDL_malloc(strlen(str_sorting_functions[algo_choosen]) + strlen(" - delay  ms") + strlen(str_sorting_interval) + 1);
-				if (algo_text_name == NULL) return SDL_APP_FAILURE;
+				checkAllocation(algo_text_name);
 				str_delay_text = SDL_realloc(str_delay_text, strlen("Delay : ") + strlen(str_sorting_interval) + 1);
-				if (str_delay_text == NULL) return SDL_APP_FAILURE;
+				checkAllocation(algo_text_name);
 				SDL_snprintf(algo_text_name, strlen(str_sorting_functions[algo_choosen]) + strlen(" - Delay  ms") + strlen(str_sorting_interval) + 1, "%s - delay %s ms", str_sorting_functions[algo_choosen], str_sorting_interval);
 				SDL_snprintf(str_delay_text, strlen("Delay : ") + strlen(str_sorting_interval) + 1, "Delay : %s", str_sorting_interval);
-				top_left_text = TTF_CreateText(text_engine, font, algo_text_name, strlen(algo_text_name));
-				delay_text = TTF_CreateText(text_engine, font, str_delay_text, strlen(str_delay_text));
+				ttf_algo_text_name = TTF_CreateText(text_engine, font, algo_text_name, strlen(algo_text_name));
+				ttf_delay_text = TTF_CreateText(text_engine, font, str_delay_text, strlen(str_delay_text));
 			}
 			break;
 		case SDL_EVENT_MOUSE_BUTTON_UP:
@@ -100,12 +100,12 @@ SDL_AppResult SDL_AppIterate(void *appstate __attribute__((unused))) {
 	SDL_SetRenderDrawColor(renderer, 10, 10, 10, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
 
-	TTF_SetTextColor(top_left_text, 255, 255, 255, 255);
-	TTF_DrawRendererText(top_left_text, 10, 10);
-	TTF_DrawRendererText(delay_text, 1050, 315);
+	TTF_SetTextColor(ttf_algo_text_name, CLR_WHITE.r, CLR_WHITE.g, CLR_WHITE.b, CLR_WHITE.a);
+	TTF_DrawRendererText(ttf_algo_text_name, 10, 10);
+	TTF_DrawRendererText(ttf_delay_text, 1050, 315);
 
 	if (green_passing_index >= 0) {
-		SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
+		SDL_SetRenderDrawColor(renderer, CLR_GREEN.r, CLR_GREEN.g, CLR_GREEN.b, CLR_GREEN.a);
 		for (short i = 0; i <= green_passing_index - 1; ++i)  SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - SDL_abs(main_arr->arr[i]) * 2, 4, SDL_abs(main_arr->arr[i]) * 2});
 
 		if (green_passing_index <= main_arr->size-1) {
