@@ -5,13 +5,15 @@
 
 typedef struct {
 	SDL_FRect box;
-	SDL_Color clr;
+	SDL_Color default_clr;
+	SDL_Color hovered_clr;
+	SDL_Color pressed_clr;
 	bool hovered;
 	bool pressed;
 } Button;
 
-Button createButton(float x, float y, float w, float h);
+void createButton(Button* btn, SDL_FRect box, SDL_Color default_clr, SDL_Color hovered_clr, SDL_Color pressed_clr);
 void renderButton(SDL_Renderer* renderer, const Button* btn);
-bool isHovered(SDL_FRect box, float mouseX, float mouseY);
+bool isHovered(SDL_FRect box, float mouse_x, float mouse_y);
 
 #endif

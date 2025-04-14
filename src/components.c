@@ -1,26 +1,29 @@
 #include "../include/components.h"
 
-Button createButton(float x, float y, float w, float h) {
-    return (Button) {
-        .box = (SDL_FRect){x, y, w, h},
-        .clr = (SDL_Color){255, 255, 255, SDL_ALPHA_OPAQUE},
-        .hovered = false,
-        .pressed = false
-    };
+void createButton(Button* btn, SDL_FRect box, SDL_Color default_clr, SDL_Color hovered_clr, SDL_Color pressed_clr) {
+    btn->box = box;
+	btn->default_clr = default_clr;
+	btn->hovered_clr = hovered_clr;
+	btn->pressed_clr = pressed_clr;
+	btn->hovered = false;
+	btn->pressed = false;
 }
 
 void renderButton(SDL_Renderer* renderer, const Button* btn) {
-	SDL_Color c = btn->clr;
+	SDL_Color current_clr;
 
-	if (btn->pressed) SDL_SetRenderDrawColor(renderer, c.r - 100, c.g - 100, c.b - 100, c.a);
-	else if (btn->hovered)	SDL_SetRenderDrawColor(renderer, c.r - 50, c.g - 50, c.b - 50, c.a);
-	else SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+	current_clr = btn->default_clr;
+
+	if (btn->pressed) current_clr = btn->pressed_clr;
+	else if (btn->hovered)	current_clr = btn->hovered_clr;
+	
+	SDL_SetRenderDrawColor(renderer, current_clr.r, current_clr.g, current_clr.b, current_clr.a);
 
 	SDL_RenderFillRect(renderer, &btn->box);
 	SDL_RenderRect(renderer, &btn->box);
 }
 
-bool isHovered(SDL_FRect box, float mouseX, float mouseY) {
-	return ((mouseX >= box.x) && (mouseX <= box.x + box.w) && (mouseY >= box.y) && (mouseY <= box.y + box.h));
+bool isHovered(SDL_FRect box, float mouse_x, float mouse_y) {
+	return ((mouse_x >= box.x) && (mouse_y <= box.x + box.w) && (mouse_y >= box.y) && (mouse_y <= box.y + box.h));
 }
 

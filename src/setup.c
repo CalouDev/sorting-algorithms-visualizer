@@ -109,17 +109,18 @@ void initializeTextEngineTTF(void) {
 	top_left_text = TTF_CreateText(text_engine, font, algo_text_name, strlen(algo_text_name));
 	checkAllocation(top_left_text);
 
-	for (uint16_t i = 0; i < N_ALGOS; ++i) buttons_text[i] = TTF_CreateText(text_engine, font, str_sorting_functions[i], strlen(str_sorting_functions[i]));
+	for (uint16_t i = 0; i < N_ALGOS; ++i) {
+        buttons_text[i] = TTF_CreateText(text_engine, font, str_sorting_functions[i], strlen(str_sorting_functions[i]));
+    }
 }
 
 void initializeComponents(void) {
-	increment_delay_button = createButton(1230, 310, 20, 20);
-	decrement_delay_button = createButton(1230, 335, 20, 20);
+	createButton(&increment_delay_button, (SDL_FRect){1230.0f, 310.0f, 20.0f, 20.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
+	createButton(&decrement_delay_button, (SDL_FRect){1230.0f, 335.0f, 20.0f, 20.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
 
 	for (uint16_t i = 0; i < N_ALGOS; ++i) {
-		buttons[i] = createButton(1050, 10 + 60 * i, 200, 50);
-		checkAllocation(buttons_text[i]);
-	}
+        createButton(&buttons[i], (SDL_FRect){1050.0f, 10 + 60.0f * i, 200.0f, 50.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
+    }
 }
 
 void freeAll(void) {
