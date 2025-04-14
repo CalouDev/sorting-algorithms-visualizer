@@ -1,37 +1,10 @@
 #define SDL_MAIN_USE_CALLBACKS
 
 #include <SDL3/SDL_main.h>
-#include "../include/components.h"
 #include "../include/setup.h"
-#include "../include/sorting_algorithms.h"
-#include "../include/utils.h"
 
 SDL_AppResult SDL_AppInit(void **appstate __attribute__((unused)), int argc __attribute__((unused)), char **argv __attribute__((unused))) {
-	SDL_srand(time(NULL));
-
-	SDL_SetAppMetadata("Sorting Algorithms Visualizer", "0.7", NULL);
-	SDL_SetAppMetadataProperty("SDL_PROP_APP_METADATA_NAME_STRING", "Sorting Algorithms Visualizer");
-	SDL_SetAppMetadataProperty("SDL_PROP_APP_METADATA_VERSION_STRING", "13/04/2025");
-	SDL_SetAppMetadataProperty("SDL_PROP_APP_METADATA_CREATOR_STRING", "CalouDev");
-	
-    if (!(SDL_Init(SDL_INIT_VIDEO) && SDL_Init(SDL_INIT_AUDIO) && TTF_Init())) return SDL_APP_FAILURE;
-
-    window = SDL_CreateWindow("Sorting Algorithms Visualizer", WIN_W, WIN_H, SDL_WINDOW_OPENGL);
-    checkAllocation(window);
-    renderer = SDL_CreateRenderer(window, NULL);
-    checkAllocation(renderer);
-
-	main_arr = SDL_malloc(sizeof(SortData) + ARR_SIZE * sizeof(short));
-	checkAllocation(main_arr);
-
-	main_arr->size = ARR_SIZE;
-	main_arr->index = 0;
-
-	for (uint16_t i = 1; i <= main_arr->size; ++i) main_arr->arr[i-1] = i;
-	shuffle(main_arr->arr, main_arr->size);
-
-	sorting_timer = SDL_GetTicks();
-	green_timer = SDL_GetTicks();
+	initializeSDL();
 
 	str_sorting_interval = SDL_malloc(DELAY_MAX_LIM_N + 1);
 	checkAllocation(str_sorting_interval);

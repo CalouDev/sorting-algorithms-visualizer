@@ -1,58 +1,54 @@
 #ifndef SETUP
 #define SETUP
 
+#include "components.h"
 #include "globals.h"
 #include "sorting_algorithms.h"
+#include "utils.h"
 
-static SortData* main_arr = NULL;
+extern SortData* main_arr;
 
-static SortingState is_sorted = SORTING_CONTINUE;
-static SortingState (*sorting_functions[N_ALGOS])(SortData*) = {sortInsertion, sortSelection, sortBubble, sortMerge};
+extern SortingState is_sorted;
+extern SortingState (*sorting_functions[N_ALGOS])(SortData*);
 
-static Button buttons[N_ALGOS];
-static Button increment_delay_button, decrement_delay_button;
+extern Button buttons[N_ALGOS];
+extern Button increment_delay_button, decrement_delay_button;
 
-static short green_passing_index = -1;
+extern short green_passing_index;
 
-static const char* str_sorting_functions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Merge Sort"};
-static char* font_path = NULL;
-static char* algo_text_name = NULL;
-static char* str_delay_text = NULL;
-static char* str_sorting_interval = NULL;
+extern const char* str_sorting_functions[N_ALGOS];
+extern char* font_path;
+extern char* algo_text_name;
+extern char* str_delay_text;
+extern char* str_sorting_interval;
 
-static float mouse_x, mouse_y;
+extern float mouse_x, mouse_y;
 
-static bool sorting = false;
-static bool element_hovered = false;
+extern bool sorting;
+extern bool element_hovered;
 
-static uint64_t sorting_timer, green_timer;
+extern uint64_t sorting_timer, green_timer;
 
-static uint16_t algo_choosen = 0;
-static uint16_t sorting_interval = 75;
+extern uint16_t algo_choosen;
+extern uint16_t sorting_interval;
 
-static SDL_Window* window = NULL;
-static SDL_Renderer* renderer = NULL;
+extern SDL_Window* window;
+extern SDL_Renderer* renderer;
 
-static SDL_MouseButtonFlags mouse_data;
-static SDL_Cursor* hand_cursor = NULL;
-static SDL_Cursor* default_cursor = NULL;
+extern SDL_MouseButtonFlags mouse_data;
+extern SDL_Cursor* hand_cursor;
+extern SDL_Cursor* default_cursor;
 
-static const SDL_Vertex increment_delay_button_triangle_vertices[3] = {
-    {{1240.0f, 312.0f}, FDARK_GREY, FDEFAULT_POINT},
-    {{1232.0f, 328.0f}, FDARK_GREY, FDEFAULT_POINT},
-    {{1248.0f, 328.0f}, FDARK_GREY, FDEFAULT_POINT}
-};
+extern const SDL_Vertex increment_delay_button_triangle_vertices[3];
 
-static const SDL_Vertex decrement_delay_button_triangle_vertices[3] = {
-    {{1232.0f, 337.0f}, FDARK_GREY, FDEFAULT_POINT},
-    {{1248.0f, 337.0f}, FDARK_GREY, FDEFAULT_POINT},
-    {{1240.0f, 353.0f}, FDARK_GREY, FDEFAULT_POINT}
-};
+extern const SDL_Vertex decrement_delay_button_triangle_vertices[3];
 
-static TTF_TextEngine* text_engine = NULL;
-static TTF_Font* font = NULL;
-static TTF_Text* top_left_text = NULL;
-static TTF_Text* delay_text = NULL;
-static TTF_Text* buttons_text[N_ALGOS];
+extern TTF_TextEngine* text_engine;
+extern TTF_Font* font;
+extern TTF_Text* top_left_text;
+extern TTF_Text* delay_text;
+extern TTF_Text* buttons_text[N_ALGOS];
+
+bool initializeSDL(void);
 
 #endif
