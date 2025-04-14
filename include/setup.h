@@ -50,5 +50,8 @@ extern TTF_Text* delay_text;
 extern TTF_Text* buttons_text[N_ALGOS];
 
 bool initializeSDL(void);
+void initializeTextEngineTTF(void);
+void initializeComponents(void);
+void freeAll(void);
 
 #endif

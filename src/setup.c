@@ -66,6 +66,11 @@ bool initializeSDL(void) {
     renderer = SDL_CreateRenderer(window, NULL);
     checkAllocation(renderer);
 
+    hand_cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
+	checkAllocation(hand_cursor);
+	default_cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
+	checkAllocation(default_cursor);
+
 	main_arr = SDL_malloc(sizeof(SortData) + ARR_SIZE * sizeof(short));
 	checkAllocation(main_arr);
 
@@ -79,4 +84,65 @@ bool initializeSDL(void) {
 	green_timer = SDL_GetTicks();
 
     return true;
+}
+
+void initializeTextEngineTTF(void) {
+	str_sorting_interval = SDL_malloc(DELAY_MAX_LIM_N + 1);
+	checkAllocation(str_sorting_interval);
+	SDL_snprintf(str_sorting_interval, DELAY_MAX_LIM_N + 1, "%d", sorting_interval);
+
+	SDL_asprintf(&font_path, "%s/../font/%s", SDL_GetBasePath(), "sans.ttf");
+	font = TTF_OpenFont(font_path, 25);
+	checkAllocation(font);
+
+	algo_text_name = SDL_malloc(strlen(str_sorting_functions[0]) + strlen(" - Delay  ms") + strlen(str_sorting_interval) + 1);
+	checkAllocation(algo_text_name);
+	str_delay_text = SDL_malloc(strlen("Delay : ") + strlen(str_sorting_interval) + 1);
+	checkAllocation(str_delay_text);
+	SDL_snprintf(algo_text_name, strlen(str_sorting_functions[0]) + strlen(" - Delay  ms") + strlen(str_sorting_interval) + 1, "%s - delay %s ms", str_sorting_functions[algo_choosen], str_sorting_interval);
+	SDL_snprintf(str_delay_text, strlen("Delay : ") + strlen(str_sorting_interval) + 1, "Delay : %s", str_sorting_interval);
+
+	text_engine = TTF_CreateRendererTextEngine(renderer);
+	checkAllocation(text_engine);
+	delay_text = TTF_CreateText(text_engine, font, str_delay_text, strlen(str_delay_text));
+	checkAllocation(delay_text);
+	top_left_text = TTF_CreateText(text_engine, font, algo_text_name, strlen(algo_text_name));
+	checkAllocation(top_left_text);
+
+	for (uint16_t i = 0; i < N_ALGOS; ++i) buttons_text[i] = TTF_CreateText(text_engine, font, str_sorting_functions[i], strlen(str_sorting_functions[i]));
+}
+
+void initializeComponents(void) {
+	increment_delay_button = createButton(1230, 310, 20, 20);
+	decrement_delay_button = createButton(1230, 335, 20, 20);
+
+	for (uint16_t i = 0; i < N_ALGOS; ++i) {
+		buttons[i] = createButton(1050, 10 + 60 * i, 200, 50);
+		checkAllocation(buttons_text[i]);
+	}
+}
+
+void freeAll(void) {
+    SDL_free(main_arr);
+	main_arr = NULL;
+	SDL_free(str_sorting_interval);
+	str_sorting_interval = NULL;
+    SDL_DestroyRenderer(renderer);
+    renderer = NULL;
+    SDL_DestroyWindow(window);
+    window = NULL;
+	SDL_free(font_path);
+	font_path = NULL;
+	SDL_free(algo_text_name);
+	algo_text_name = NULL;
+	SDL_free(str_delay_text);
+	str_delay_text = NULL;
+	for (uint16_t i = 0; i < N_ALGOS; ++i) TTF_DestroyText(buttons_text[i]);
+
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);
+	SDL_Quit();
+
+	TTF_DestroyGPUTextEngine(text_engine);
+	TTF_DestroyText(top_left_text);
+	TTF_Quit();
 }
