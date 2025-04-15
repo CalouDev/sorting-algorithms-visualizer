@@ -117,8 +117,11 @@ void initializeTextEngineTTF(void) {
 	checkAllocation(ttf_algo_text_name);
 
 	for (uint16_t i = 0; i < N_ALGOS; ++i) {
-        buttons_text[i] = TTF_CreateText(text_engine, font, str_sorting_functions[i], strlen(str_sorting_functions[i]));
+        buttons_text[i] = TTF_CreateText(text_engine, font, str_sorting_functions[i], strlen(str_sorting_functions[i]) + 1);
+		TTF_SetTextColor(buttons_text[i], CLR_BLACK.r, CLR_BLACK.g, CLR_BLACK.b, CLR_BLACK.a);
     }
+
+	TTF_SetTextColor(ttf_algo_text_name, CLR_WHITE.r, CLR_WHITE.g, CLR_WHITE.b, CLR_WHITE.a);
 }
 
 void initializeComponents(void) {

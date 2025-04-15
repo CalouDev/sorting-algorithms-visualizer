@@ -3,6 +3,7 @@
 
 #include "components.h"
 #include "globals.h"
+#include "rendering.h"
 #include "sorting_algorithms.h"
 #include "utils.h"
 

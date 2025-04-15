@@ -28,6 +28,8 @@ static const SDL_Color CLR_LIGHT_GREY = {205, 205, 205, 255};
 static const SDL_Color CLR_GREY = {155, 155, 155, 255};
 static const SDL_FColor FDARK_GREY = {0.4f, 0.4f, 0.4f, 1.0f};
 static const SDL_Color CLR_GREEN = {0, 255, 0, 255};
+static const SDL_Color CLR_RED = {255, 0, 0, 255};
+static const SDL_Color CLR_BLACK = {10, 10, 10, 255};
 static const SDL_FPoint FDEFAULT_POINT = {0.0f, 0.0f};
 
 #endif

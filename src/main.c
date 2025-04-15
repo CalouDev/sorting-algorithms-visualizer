@@ -97,26 +97,24 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 SDL_AppResult SDL_AppIterate(void *appstate __attribute__((unused))) {
 	mouse_data = SDL_GetMouseState(&mouse_x, &mouse_y);
 
-	SDL_SetRenderDrawColor(renderer, 10, 10, 10, SDL_ALPHA_OPAQUE);
-	SDL_RenderClear(renderer);
+	if (element_hovered) SDL_SetCursor(hand_cursor);
+	else SDL_SetCursor(default_cursor);
 
-	TTF_SetTextColor(ttf_algo_text_name, CLR_WHITE.r, CLR_WHITE.g, CLR_WHITE.b, CLR_WHITE.a);
-	TTF_DrawRendererText(ttf_algo_text_name, 10, 10);
-	TTF_DrawRendererText(ttf_delay_text, 1050, 315);
+	clearRenderer(CLR_BLACK);
 
 	if (green_passing_index >= 0) {
 		SDL_SetRenderDrawColor(renderer, CLR_GREEN.r, CLR_GREEN.g, CLR_GREEN.b, CLR_GREEN.a);
 		for (short i = 0; i <= green_passing_index - 1; ++i)  SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - SDL_abs(main_arr->arr[i]) * 2, 4, SDL_abs(main_arr->arr[i]) * 2});
 
 		if (green_passing_index <= main_arr->size-1) {
-			SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+			SDL_SetRenderDrawColor(renderer, CLR_RED.r, CLR_RED.g, CLR_RED.b, CLR_RED.a);
 			SDL_RenderFillRect(renderer, &(SDL_FRect){1 + green_passing_index * 4, WIN_H - SDL_abs(main_arr->arr[green_passing_index]) * 2, 4, WIN_H});
 		}
 	}
 
 	for (uint16_t i = green_passing_index + 1; i < main_arr->size; ++i) {
-		if (main_arr->arr[i] < 0) SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
-		else SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+		if (main_arr->arr[i] < 0) SDL_SetRenderDrawColor(renderer, CLR_RED.r, CLR_RED.g, CLR_RED.b, CLR_RED.a);
+		else SDL_SetRenderDrawColor(renderer, CLR_WHITE.r, CLR_WHITE.g, CLR_WHITE.b, CLR_WHITE.a);
 		SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - SDL_abs(main_arr->arr[i]) * 2, 4, WIN_H});
 	}
 
@@ -138,20 +136,8 @@ SDL_AppResult SDL_AppIterate(void *appstate __attribute__((unused))) {
 		green_timer = SDL_GetTicks();
 	}
 
-	renderButton(renderer, &increment_delay_button);
-	renderButton(renderer, &decrement_delay_button);
-
-	for (uint16_t i = 0; i < N_ALGOS; ++i) {
-		renderButton(renderer, &buttons[i]);
-		TTF_SetTextColor(buttons_text[i], 0, 0, 0, SDL_ALPHA_OPAQUE);
-		TTF_DrawRendererText(buttons_text[i], 1060, 20 + 60 * i);
-	}
-
-	SDL_RenderGeometry(renderer, NULL, increment_delay_button_triangle_vertices, 3, NULL, 3);
-	SDL_RenderGeometry(renderer, NULL, decrement_delay_button_triangle_vertices, 3, NULL, 3);
-
-	if (element_hovered) SDL_SetCursor(hand_cursor);
-	else SDL_SetCursor(default_cursor);
+	renderComponents();
+	renderText();
 
 	SDL_RenderPresent(renderer);
 
