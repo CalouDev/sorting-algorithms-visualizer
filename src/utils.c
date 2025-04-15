@@ -10,7 +10,7 @@ SDL_AppResult checkAllocation(const void* ptr) {
 	return state;
 }
 
-void swap(short *a, short *b) {
+void swap(short* a, short* b) {
 	uint16_t temp;
 	
 	temp = *a;

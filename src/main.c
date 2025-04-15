@@ -20,7 +20,9 @@ void SDL_AppQuit(void *appstate __attribute__((unused)), SDL_AppResult result __
 SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *event) {
 	switch (event->type) {
 		case SDL_EVENT_QUIT:
+
 			return SDL_APP_SUCCESS;
+
 		case SDL_EVENT_MOUSE_MOTION:
 			element_hovered = false;
 			increment_delay_button.hovered = isFRectHovered(increment_delay_button.box, event->motion.x, event->motion.y);
@@ -32,7 +34,9 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 			}
 
 			break;
+
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+
 			if (event->button.button == SDL_BUTTON_LEFT) {
 				if (increment_delay_button.hovered) {
 					increment_delay_button.pressed = true;
@@ -102,39 +106,11 @@ SDL_AppResult SDL_AppIterate(void *appstate __attribute__((unused))) {
 
 	clearRenderer(CLR_BLACK);
 
-	if (green_passing_index >= 0) {
-		SDL_SetRenderDrawColor(renderer, CLR_GREEN.r, CLR_GREEN.g, CLR_GREEN.b, CLR_GREEN.a);
-		for (short i = 0; i <= green_passing_index - 1; ++i)  SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - SDL_abs(main_arr->arr[i]) * 2, 4, SDL_abs(main_arr->arr[i]) * 2});
+	renderGreenEffect();
 
-		if (green_passing_index <= main_arr->size-1) {
-			SDL_SetRenderDrawColor(renderer, CLR_RED.r, CLR_RED.g, CLR_RED.b, CLR_RED.a);
-			SDL_RenderFillRect(renderer, &(SDL_FRect){1 + green_passing_index * 4, WIN_H - SDL_abs(main_arr->arr[green_passing_index]) * 2, 4, WIN_H});
-		}
-	}
+	renderAndProcessSortingEffect();
 
-	for (uint16_t i = green_passing_index + 1; i < main_arr->size; ++i) {
-		if (main_arr->arr[i] < 0) SDL_SetRenderDrawColor(renderer, CLR_RED.r, CLR_RED.g, CLR_RED.b, CLR_RED.a);
-		else SDL_SetRenderDrawColor(renderer, CLR_WHITE.r, CLR_WHITE.g, CLR_WHITE.b, CLR_WHITE.a);
-		SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - SDL_abs(main_arr->arr[i]) * 2, 4, WIN_H});
-	}
-
-	if (sorting && SDL_GetTicks() > sorting_timer + sorting_interval) {
-		for (uint16_t i = 0; i < main_arr->size; ++i) { main_arr->arr[i] = SDL_abs(main_arr->arr[i]); }
-		is_sorted = sorting_functions[algo_choosen](main_arr);
-		if (algo_choosen != 3) main_arr->index++;
-		else main_arr->index *= 2;
-		if (is_sorted == SORTING_STOP || main_arr->index >= main_arr->size) {
-			sorting = false;
-			green_passing_index = 0;
-		}
-
-		sorting_timer = SDL_GetTicks();
-	}
-
-	if (green_passing_index >= 0 && green_passing_index < main_arr->size && SDL_GetTicks() > green_timer + GREEN_EFFECT_INTERVAL) {
-		green_passing_index++;
-		green_timer = SDL_GetTicks();
-	}
+	incrementGreenEffect();
 
 	renderComponents();
 	renderText();
