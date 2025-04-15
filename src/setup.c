@@ -149,12 +149,11 @@ void freeAll(void) {
 	SDL_free(str_delay_text);
 	str_delay_text = NULL;
 	for (uint16_t i = 0; i < N_ALGOS; ++i) TTF_DestroyText(buttons_text[i]);
-
-	SDL_QuitSubSystem(SDL_INIT_VIDEO);
-	SDL_Quit();
-
 	TTF_DestroyGPUTextEngine(text_engine);
 	TTF_DestroyText(ttf_algo_text_name);
     TTF_DestroyText(ttf_delay_text);
 	TTF_Quit();
+
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);
+	SDL_Quit();
 }

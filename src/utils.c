@@ -60,3 +60,7 @@ void mergeSubArr(short arr[], uint16_t l, uint16_t r, uint16_t m) {
 	SDL_free(leftArr);
 	SDL_free(rightArr);
 }
+
+bool isFRectHovered(SDL_FRect box, float mouse_x, float mouse_y) {
+	return ((mouse_x >= box.x) && (mouse_y <= box.x + box.w) && (mouse_y >= box.y) && (mouse_y <= box.y + box.h));
+}

@@ -23,11 +23,11 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 			return SDL_APP_SUCCESS;
 		case SDL_EVENT_MOUSE_MOTION:
 			element_hovered = false;
-			increment_delay_button.hovered = isHovered(increment_delay_button.box, event->motion.x, event->motion.y);
-			decrement_delay_button.hovered = isHovered(decrement_delay_button.box, event->motion.x, event->motion.y);
+			increment_delay_button.hovered = isFRectHovered(increment_delay_button.box, event->motion.x, event->motion.y);
+			decrement_delay_button.hovered = isFRectHovered(decrement_delay_button.box, event->motion.x, event->motion.y);
 			if (increment_delay_button.hovered || decrement_delay_button.hovered) element_hovered = true;
 			for (uint16_t i = 0; i < N_ALGOS; ++i) {
-				buttons[i].hovered = isHovered(buttons[i].box, event->motion.x, event->motion.y); 
+				buttons[i].hovered = isFRectHovered(buttons[i].box, event->motion.x, event->motion.y); 
 				if (buttons[i].hovered) element_hovered = true;
 			}
 
