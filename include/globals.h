@@ -11,6 +11,9 @@
 #define ARR_SIZE 250 // U
 #define N_ALGOS 4U
 #define DELAY_MAX_LIM_N 4U
+#define MIN_DELAY 25
+#define MAX_DELAY 975
+#define STEP_DELAY 25
 
 typedef enum {
     SORTING_STOP,

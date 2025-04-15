@@ -87,23 +87,23 @@ bool initializeSDL(void) {
 }
 
 void initializeTextEngineTTF(void) {
-    size_t len_sorting_function0, len_sorting_interval, len_delay_text_begin, len_delay_text_end;
+    size_t strlen_sorting_function0, strlen_sorting_interval, strlen_delay_text_begin, strlen_delay_text_end;
 
 	str_sorting_interval = SDL_malloc(DELAY_MAX_LIM_N + 1);
 	checkAllocation(str_sorting_interval);
 	SDL_snprintf(str_sorting_interval, DELAY_MAX_LIM_N + 1, "%d", sorting_interval);
 
-    len_sorting_function0 = strlen(str_sorting_functions[0]);
-    len_delay_text_begin = strlen("Delay : ");
-    len_delay_text_end = strlen(" - Delay  ms");
-    len_sorting_interval = strlen(str_sorting_interval);
+    strlen_sorting_function0 = strlen(str_sorting_functions[0]);
+    strlen_delay_text_begin = strlen("Delay : ");
+    strlen_delay_text_end = strlen(" - Delay  ms");
+    strlen_sorting_interval = strlen(str_sorting_interval);
 
-	algo_text_name = SDL_malloc(len_sorting_function0 + len_delay_text_end + len_sorting_interval + 1);
+	algo_text_name = SDL_malloc(strlen_sorting_function0 + strlen_delay_text_end + strlen_sorting_interval + 1);
 	checkAllocation(algo_text_name);
-	str_delay_text = SDL_malloc(len_delay_text_begin + len_sorting_interval + 1);
+	str_delay_text = SDL_malloc(strlen_delay_text_begin + strlen_sorting_interval + 1);
 	checkAllocation(str_delay_text);
-	SDL_snprintf(algo_text_name, len_sorting_function0 + len_delay_text_end + len_sorting_interval + 1, "%s - delay %s ms", str_sorting_functions[algo_choosen], str_sorting_interval);
-	SDL_snprintf(str_delay_text, len_delay_text_begin + len_sorting_interval + 1, "Delay : %s", str_sorting_interval);
+	SDL_snprintf(algo_text_name, strlen_sorting_function0 + strlen_delay_text_end + strlen_sorting_interval + 1, "%s - delay %s ms", str_sorting_functions[algo_choosen], str_sorting_interval);
+	SDL_snprintf(str_delay_text, strlen_delay_text_begin + strlen_sorting_interval + 1, "Delay : %s", str_sorting_interval);
 
     SDL_asprintf(&font_path, "%s/../font/%s", SDL_GetBasePath(), "sans.ttf");
 	font = TTF_OpenFont(font_path, 25);

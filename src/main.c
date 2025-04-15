@@ -40,10 +40,10 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 			if (event->button.button == SDL_BUTTON_LEFT) {
 				if (increment_delay_button.hovered) {
 					increment_delay_button.pressed = true;
-					if (sorting_interval < 974) sorting_interval += 25;
+					if (sorting_interval < MAX_DELAY) sorting_interval += STEP_DELAY;
 				} else if (decrement_delay_button.hovered) {
 					decrement_delay_button.pressed = true;
-					if (sorting_interval > 25) sorting_interval -= 25;
+					if (sorting_interval > MIN_DELAY) sorting_interval -= STEP_DELAY;
 				} else {
 					for (uint16_t i = 0; i < N_ALGOS; ++i) {
 						if (buttons[i].hovered) {
