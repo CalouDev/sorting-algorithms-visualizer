@@ -64,3 +64,16 @@ void mergeSubArr(short arr[], uint16_t l, uint16_t r, uint16_t m) {
 bool isFRectHovered(SDL_FRect box, float mouse_x, float mouse_y) {
 	return ((mouse_x >= box.x) && (mouse_y <= box.x + box.w) && (mouse_y >= box.y) && (mouse_y <= box.y + box.h));
 }
+
+size_t intLen(size_t n) {
+	size_t length;
+
+	length = 0;
+
+	while (n != 0) {
+		n /= 10;
+		length++;
+	}
+
+	return length;
+}

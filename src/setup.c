@@ -89,9 +89,9 @@ bool initializeSDL(void) {
 void initializeTextEngineTTF(void) {
     size_t strlen_sorting_function0, strlen_sorting_interval, strlen_delay_text_begin, strlen_delay_text_end;
 
-	str_sorting_interval = SDL_malloc(DELAY_MAX_LIM_N + 1);
+	str_sorting_interval = SDL_malloc(intLen(sorting_interval) + 1);
 	checkAllocation(str_sorting_interval);
-	SDL_snprintf(str_sorting_interval, DELAY_MAX_LIM_N + 1, "%d", sorting_interval);
+	SDL_snprintf(str_sorting_interval, intLen(sorting_interval) + 1, "%d", sorting_interval);
 
     strlen_sorting_function0 = strlen(str_sorting_functions[0]);
     strlen_delay_text_begin = strlen("Delay : ");

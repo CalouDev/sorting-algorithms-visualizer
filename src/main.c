@@ -58,7 +58,7 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 					}
 				}
 
-				SDL_snprintf(str_sorting_interval, DELAY_MAX_LIM_N + 1, "%d", sorting_interval);
+				SDL_snprintf(str_sorting_interval, intLen(sorting_interval) + 1, "%d", sorting_interval);
 				SDL_free(algo_text_name);
 				algo_text_name = SDL_malloc(strlen(str_sorting_functions[algo_choosen]) + strlen(" - delay  ms") + strlen(str_sorting_interval) + 1);
 				checkAllocation(algo_text_name);
