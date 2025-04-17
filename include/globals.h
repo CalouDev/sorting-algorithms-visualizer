@@ -8,9 +8,8 @@
 #define WIN_W 1280U
 #define WIN_H 640U
 #define GREEN_EFFECT_INTERVAL 2U
-#define ARR_SIZE 250 // U
+#define DEFAULT_ARR_SIZE 250 // U
 #define N_ALGOS 4U
-#define DELAY_MAX_LIM_N 4U
 #define MIN_DELAY 25
 #define MAX_DELAY 975
 #define STEP_DELAY 25

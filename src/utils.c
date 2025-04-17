@@ -61,6 +61,22 @@ void mergeSubArr(short arr[], uint16_t l, uint16_t r, uint16_t m) {
 	SDL_free(rightArr);
 }
 
+void setupArr(SortData** sort_data, size_t sz) {
+	SDL_free(*sort_data);
+	*sort_data = SDL_malloc(sizeof(SortData) + sz * sizeof(short));
+	checkAllocation(*sort_data);
+
+	(*sort_data)->size = sz;
+	(*sort_data)->index = 0;
+
+	for (uint16_t i = 1; i <= sz; ++i) {
+		(*sort_data)->arr[i-1] = i;
+	}
+
+	shuffle((*sort_data)->arr, sz);
+}
+
+
 bool isFRectHovered(SDL_FRect box, float mouse_x, float mouse_y) {
 	return ((mouse_x >= box.x) && (mouse_y <= box.x + box.w) && (mouse_y >= box.y) && (mouse_y <= box.y + box.h));
 }

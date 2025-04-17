@@ -71,14 +71,7 @@ bool initializeSDL(void) {
 	default_cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_DEFAULT);
 	checkAllocation(default_cursor);
 
-	main_arr = SDL_malloc(sizeof(SortData) + ARR_SIZE * sizeof(short));
-	checkAllocation(main_arr);
-
-	main_arr->size = ARR_SIZE;
-	main_arr->index = 0;
-
-	for (uint16_t i = 1; i <= main_arr->size; ++i) main_arr->arr[i-1] = i;
-	shuffle(main_arr->arr, main_arr->size);
+	setupArr(&main_arr, DEFAULT_ARR_SIZE);
 
 	sorting_timer = SDL_GetTicks();
 	green_timer = SDL_GetTicks();
