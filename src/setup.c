@@ -8,7 +8,7 @@ SortingState (*sorting_functions[N_ALGOS])(SortData*) = {sortInsertion, sortSele
 Button buttons[N_ALGOS];
 Button increment_delay_button, decrement_delay_button;
 
-short green_passing_index = -1;
+Counter counters[N_COUNTER];
 
 const char* str_sorting_functions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Merge Sort"};
 char* font_path = NULL;
@@ -16,15 +16,16 @@ char* algo_text_name = NULL;
 char* str_delay_text = NULL;
 char* str_sorting_interval = NULL;
 
+short green_passing_index = -1;
+
 float mouse_x, mouse_y;
+
+uint64_t sorting_timer, green_timer;
+uint16_t algo_choosen = 0;
+uint16_t sorting_interval = DEFAULT_SORTING_INTERVAL;
 
 bool sorting = false;
 bool element_hovered = false;
-
-uint64_t sorting_timer, green_timer;
-
-uint16_t algo_choosen = 0;
-uint16_t sorting_interval = 75;
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
@@ -118,12 +119,16 @@ void initializeTextEngineTTF(void) {
 }
 
 void initializeComponents(void) {
-	createButton(&increment_delay_button, (SDL_FRect){1230.0f, 310.0f, 20.0f, 20.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
-	createButton(&decrement_delay_button, (SDL_FRect){1230.0f, 335.0f, 20.0f, 20.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
+//	createButton(&increment_delay_button, (SDL_FRect){1230.0f, 310.0f, 20.0f, 20.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
+//	createButton(&decrement_delay_button, (SDL_FRect){1230.0f, 335.0f, 20.0f, 20.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
 
 	for (uint16_t i = 0; i < N_ALGOS; ++i) {
-        createButton(&buttons[i], (SDL_FRect){1050.0f, 10 + 60.0f * i, 200.0f, 50.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
+        createButton(&buttons[i], (SDL_FRect){1050.0f, 10.0f + 60.0f * i, 200.0f, 50.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
     }
+
+	for (uint16_t i = 0; i < N_COUNTER; ++i) {
+		createCounter(&counters[i], DEFAULT_SORTING_INTERVAL, (SDL_FRect){1050.0f, 300 + 60.0f * i, 200.0f, 50.0f}, CLR_WHITE, CLR_BLUE, CLR_GREY_BLUE, CLR_DARK_BLUE);
+	}
 }
 
 void freeAll(void) {

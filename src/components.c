@@ -22,3 +22,50 @@ void renderButton(SDL_Renderer* renderer, const Button* btn) {
 	SDL_RenderFillRect(renderer, &btn->box);
 	SDL_RenderRect(renderer, &btn->box);
 }
+
+void createCounter(Counter* counter, size_t val, SDL_FRect box, SDL_Color bg_clr, SDL_Color default_clr, SDL_Color hovered_clr, SDL_Color pressed_clr) {
+	SDL_FRect left_box, right_box;
+
+	counter->main_box = box;
+	counter->value = val;
+	counter->bg_clr = bg_clr;
+
+
+	left_box.x = box.x;
+	left_box.y = box.y;
+	left_box.w = box.h;
+	left_box.h = box.h;
+
+	right_box.x = box.x + box.w - box.h;
+	right_box.y = box.y;
+	right_box.w = box.h;
+	right_box.h = box.h;
+
+	createButton(&counter->decrement_btn, left_box, default_clr, hovered_clr, pressed_clr);
+	createButton(&counter->increment_btn, right_box, default_clr, hovered_clr, pressed_clr);
+}
+
+void renderCounter(SDL_Renderer* renderer, TTF_TextEngine* text_engine, TTF_Font* font, const Counter* counter) {
+	int pix_w, pix_h;
+	char* text_value = NULL;
+	TTF_Text* ttf_text_val;
+
+	text_value = SDL_malloc((intLen(counter->value) + 1));
+
+	SDL_snprintf(text_value, (intLen(counter->value) + 1), "%lld", counter->value);
+	ttf_text_val = TTF_CreateText(text_engine, font, text_value, (intLen(counter->value) + 1));
+	TTF_GetTextSize(ttf_text_val, &pix_w, &pix_h);
+
+	SDL_SetRenderDrawColor(renderer, counter->bg_clr.r, counter->bg_clr.g, counter->bg_clr.b, counter->bg_clr.a);
+
+	SDL_RenderFillRect(renderer, &counter->main_box);
+	SDL_RenderRect(renderer, &counter->main_box);
+
+	renderButton(renderer, &counter->decrement_btn);
+	renderButton(renderer, &counter->increment_btn);
+
+	TTF_SetTextColor(ttf_text_val, CLR_BLACK.r, CLR_BLACK.g, CLR_BLACK.b, CLR_BLACK.a);
+	TTF_DrawRendererText(ttf_text_val, counter->main_box.x + counter->main_box.w / 2 - pix_w / 2, counter->main_box.y + counter->main_box.h / 2 - pix_h / 2);
+
+	SDL_free(text_value);
+}

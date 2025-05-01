@@ -78,7 +78,7 @@ void setupArr(SortData** sort_data, size_t sz) {
 
 
 bool isFRectHovered(SDL_FRect box, float mouse_x, float mouse_y) {
-	return ((mouse_x >= box.x) && (mouse_y <= box.x + box.w) && (mouse_y >= box.y) && (mouse_y <= box.y + box.h));
+	return ((mouse_x >= box.x) && (mouse_x <= box.x + box.w) && (mouse_y >= box.y) && (mouse_y <= box.y + box.h));
 }
 
 size_t intLen(size_t n) {

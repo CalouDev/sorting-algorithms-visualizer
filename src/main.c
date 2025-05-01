@@ -25,9 +25,13 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 
 		case SDL_EVENT_MOUSE_MOTION:
 			element_hovered = false;
-			increment_delay_button.hovered = isFRectHovered(increment_delay_button.box, event->motion.x, event->motion.y);
-			decrement_delay_button.hovered = isFRectHovered(decrement_delay_button.box, event->motion.x, event->motion.y);
-			if (increment_delay_button.hovered || decrement_delay_button.hovered) element_hovered = true;
+
+			for (uint16_t i = 0; i < N_COUNTER; ++i) {
+				counters[i].decrement_btn.hovered = isFRectHovered(counters[i].decrement_btn.box, event->motion.x, event->motion.y);
+				counters[i].increment_btn.hovered = isFRectHovered(counters[i].increment_btn.box, event->motion.x, event->motion.y);
+				if (counters[i].decrement_btn.hovered || counters[i].increment_btn.hovered) element_hovered = true;
+			}
+
 			for (uint16_t i = 0; i < N_ALGOS; ++i) {
 				buttons[i].hovered = isFRectHovered(buttons[i].box, event->motion.x, event->motion.y); 
 				if (buttons[i].hovered) element_hovered = true;
@@ -38,23 +42,23 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 
 			if (event->button.button == SDL_BUTTON_LEFT) {
-				if (increment_delay_button.hovered) {
-					increment_delay_button.pressed = true;
-					if (sorting_interval < MAX_DELAY) sorting_interval += STEP_DELAY;
-				} else if (decrement_delay_button.hovered) {
-					decrement_delay_button.pressed = true;
-					if (sorting_interval > MIN_DELAY) sorting_interval -= STEP_DELAY;
-				} else {
-					for (uint16_t i = 0; i < N_ALGOS; ++i) {
-						if (buttons[i].hovered) {
-							buttons[i].pressed = true;
-							sorting = false;
-							is_sorted = SORTING_CONTINUE;
-							green_passing_index = -1;
-							algo_choosen = i;
-							for (uint16_t j = 0; j < main_arr->size; ++j) main_arr->arr[j] = SDL_abs(main_arr->arr[j]);
-							shuffle(main_arr->arr, main_arr->size);
-						}
+				for (uint16_t i = 0; i < N_COUNTER; ++i) {
+					if (sorting_interval > MIN_DELAY && counters[i].decrement_btn.hovered) {
+						sorting_interval -= STEP_DELAY;
+					} else if (sorting_interval < MAX_DELAY && counters[i].increment_btn.hovered) {
+						sorting_interval += STEP_DELAY;
+					}
+				}
+
+				for (uint16_t i = 0; i < N_ALGOS; ++i) {
+					if (buttons[i].hovered) {
+						buttons[i].pressed = true;
+						sorting = false;
+						is_sorted = SORTING_CONTINUE;
+						green_passing_index = -1;
+						algo_choosen = i;
+						for (uint16_t j = 0; j < main_arr->size; ++j) main_arr->arr[j] = SDL_abs(main_arr->arr[j]);
+						shuffle(main_arr->arr, main_arr->size);
 					}
 				}
 
@@ -72,8 +76,8 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 			break;
 		case SDL_EVENT_MOUSE_BUTTON_UP:
 			if (event->button.button == SDL_BUTTON_LEFT) {
-				if (increment_delay_button.pressed) increment_delay_button.pressed = false;
-				if (decrement_delay_button.pressed) decrement_delay_button.pressed = false;
+				//if (increment_delay_button.pressed) increment_delay_button.pressed = false;
+				//if (decrement_delay_button.pressed) decrement_delay_button.pressed = false;
 				for (uint16_t i = 0; i < N_ALGOS; ++i) 
 					if (buttons[i].pressed) buttons[i].pressed = false;
 			}

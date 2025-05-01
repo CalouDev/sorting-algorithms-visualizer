@@ -13,7 +13,9 @@ extern SortingState is_sorted;
 extern SortingState (*sorting_functions[N_ALGOS])(SortData*);
 
 extern Button buttons[N_ALGOS];
-extern Button increment_delay_button, decrement_delay_button;
+//extern Button increment_delay_button, decrement_delay_button;
+
+extern Counter counters[N_COUNTER];
 
 extern short green_passing_index;
 

@@ -7,7 +7,6 @@ void clearRenderer(SDL_Color bg_clr) {
 
 void renderText(void) {
 	TTF_DrawRendererText(ttf_algo_text_name, 10.0f, 10.0f);
-	TTF_DrawRendererText(ttf_delay_text, 1050.0f, 315.0f);
 
     for (uint16_t i = 0; i < N_ALGOS; ++i) {
 		TTF_DrawRendererText(buttons_text[i], 1060.0f, 20 + 60.0f * i);
@@ -19,11 +18,9 @@ void renderComponents(void) {
 		renderButton(renderer, &buttons[i]);
 	}
 
-    renderButton(renderer, &increment_delay_button);
-	renderButton(renderer, &decrement_delay_button);
-
-	SDL_RenderGeometry(renderer, NULL, increment_delay_button_triangle_vertices, 3, NULL, 3);
-	SDL_RenderGeometry(renderer, NULL, decrement_delay_button_triangle_vertices, 3, NULL, 3);
+	for (uint16_t i = 0; i < N_COUNTER; ++i) {
+		renderCounter(renderer, text_engine, font, &counters[i]);
+	}
 }
 
 void renderAndProcessSortingEffect(void) {
@@ -33,7 +30,7 @@ void renderAndProcessSortingEffect(void) {
 		SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - SDL_abs(main_arr->arr[i]) * 2, 4, WIN_H});
 	}
 
-	if (sorting && SDL_GetTicks() > sorting_timer + sorting_interval) {
+	if (sorting && SDL_GetTicks() > (sorting_timer + sorting_interval)) {
 		for (uint16_t i = 0; i < main_arr->size; ++i) { main_arr->arr[i] = SDL_abs(main_arr->arr[i]); }
 		is_sorted = sorting_functions[algo_choosen](main_arr);
 		if (3 != algo_choosen) main_arr->index++;
