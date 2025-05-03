@@ -9,7 +9,7 @@ void renderText(void) {
 	TTF_DrawRendererText(ttf_algo_text_name, 10.0f, 10.0f);
 
     for (uint16_t i = 0; i < N_ALGOS; ++i) {
-		TTF_DrawRendererText(buttons_text[i], 1060.0f, 20 + 60.0f * i);
+		TTF_DrawRendererText(buttons_text[i], 1060.0f, 40 + 60.0f * i);
     }
 }
 
@@ -18,9 +18,12 @@ void renderComponents(void) {
 		renderButton(renderer, &buttons[i]);
 	}
 
-	for (uint16_t i = 0; i < N_COUNTER; ++i) {
+	/*for (uint16_t i = 0; i < N_COUNTER; ++i) {
 		renderCounter(renderer, text_engine, font, &counters[i]);
-	}
+	}*/
+
+	renderCounter(renderer, text_engine, font, &delay_counter);
+	renderCounter(renderer, text_engine, font, &arr_sz_counter);
 }
 
 void renderAndProcessSortingEffect(void) {

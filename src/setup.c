@@ -6,9 +6,10 @@ SortingState is_sorted = SORTING_CONTINUE;
 SortingState (*sorting_functions[N_ALGOS])(SortData*) = {sortInsertion, sortSelection, sortBubble, sortMerge};
 
 Button buttons[N_ALGOS];
-Button increment_delay_button, decrement_delay_button;
 
-Counter counters[N_COUNTER];
+Counter delay_counter;
+Counter arr_sz_counter;
+//Counter counters[N_COUNTER];
 
 const char* str_sorting_functions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Merge Sort"};
 char* font_path = NULL;
@@ -33,18 +34,6 @@ SDL_Renderer* renderer = NULL;
 SDL_MouseButtonFlags mouse_data;
 SDL_Cursor* hand_cursor = NULL;
 SDL_Cursor* default_cursor = NULL;
-
-const SDL_Vertex increment_delay_button_triangle_vertices[3] = {
-    {{1240.0f, 312.0f}, FDARK_GREY, FDEFAULT_POINT},
-    {{1232.0f, 328.0f}, FDARK_GREY, FDEFAULT_POINT},
-    {{1248.0f, 328.0f}, FDARK_GREY, FDEFAULT_POINT}
-};
-
-const SDL_Vertex decrement_delay_button_triangle_vertices[3] = {
-    {{1232.0f, 337.0f}, FDARK_GREY, FDEFAULT_POINT},
-    {{1248.0f, 337.0f}, FDARK_GREY, FDEFAULT_POINT},
-    {{1240.0f, 353.0f}, FDARK_GREY, FDEFAULT_POINT}
-};
 
 TTF_TextEngine* text_engine = NULL;
 TTF_Font* font = NULL;
@@ -119,16 +108,12 @@ void initializeTextEngineTTF(void) {
 }
 
 void initializeComponents(void) {
-//	createButton(&increment_delay_button, (SDL_FRect){1230.0f, 310.0f, 20.0f, 20.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
-//	createButton(&decrement_delay_button, (SDL_FRect){1230.0f, 335.0f, 20.0f, 20.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
-
 	for (uint16_t i = 0; i < N_ALGOS; ++i) {
-        createButton(&buttons[i], (SDL_FRect){1050.0f, 10.0f + 60.0f * i, 200.0f, 50.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
+        createButton(&buttons[i], (SDL_FRect){1050.0f, 30.0f + 60.0f * i, 200.0f, 50.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
     }
 
-	for (uint16_t i = 0; i < N_COUNTER; ++i) {
-		createCounter(&counters[i], DEFAULT_SORTING_INTERVAL, (SDL_FRect){1050.0f, 300 + 60.0f * i, 200.0f, 50.0f}, CLR_WHITE, CLR_BLUE, CLR_GREY_BLUE, CLR_DARK_BLUE);
-	}
+	createCounter(&delay_counter, DEFAULT_SORTING_INTERVAL, (SDL_FRect){1050.0f, 300.0f, 200.0f, 50.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY, CLR_DARK_GREY);
+	createCounter(&arr_sz_counter, main_arr->size, (SDL_FRect){1050.0f, 360.0f, 200.0f, 50.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY, CLR_DARK_GREY);
 }
 
 void freeAll(void) {
