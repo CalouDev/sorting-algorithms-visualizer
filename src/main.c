@@ -48,19 +48,29 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 				if (delay_counter.decrement_btn.hovered && sorting_interval > MIN_DELAY) {
 					sorting_interval -= STEP_DELAY;
 					delay_counter.value -= STEP_DELAY;
+					delay_counter.decrement_btn.pressed = true;
 				} else if (delay_counter.increment_btn.hovered && sorting_interval < MAX_DELAY) {
 					sorting_interval += STEP_DELAY;
 					delay_counter.value += STEP_DELAY;
+					delay_counter.increment_btn.pressed = true;
 				}
 
-				if (arr_sz_counter.decrement_btn.hovered && sorting_interval > MIN_DELAY) {
+				if (arr_sz_counter.decrement_btn.hovered && main_arr->size > MIN_ARR_SZ) {
+					arr_sz_counter.decrement_btn.pressed = true;
+					sorting = false;
+					is_sorted = SORTING_CONTINUE;
+					green_passing_index = -1;
 					arr_sz_counter.value -= 1;
 					setupArr(&main_arr, arr_sz_counter.value);
-					bar_width = 1000.0 / main_arr->size;
-				} else if (arr_sz_counter.increment_btn.hovered && sorting_interval < MAX_DELAY) {
+					bar_width = (float)MAX_ARR_SZ / main_arr->size;
+				} else if (arr_sz_counter.increment_btn.hovered && main_arr->size < MAX_ARR_SZ) {
+					arr_sz_counter.increment_btn.pressed = true;
+					sorting = false;
+					is_sorted = SORTING_CONTINUE;
+					green_passing_index = -1;
 					arr_sz_counter.value += 1;
 					setupArr(&main_arr, arr_sz_counter.value);
-					bar_width = 1000.0 / main_arr->size;
+					bar_width = (float)MAX_ARR_SZ / main_arr->size;
 				}
 
 				for (uint16_t i = 0; i < N_ALGOS; ++i) {
@@ -89,10 +99,14 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 			break;
 		case SDL_EVENT_MOUSE_BUTTON_UP:
 			if (event->button.button == SDL_BUTTON_LEFT) {
-				//if (increment_delay_button.pressed) increment_delay_button.pressed = false;
-				//if (decrement_delay_button.pressed) decrement_delay_button.pressed = false;
-				for (uint16_t i = 0; i < N_ALGOS; ++i) 
+				if (delay_counter.decrement_btn.pressed) delay_counter.decrement_btn.pressed = false;
+				if (delay_counter.increment_btn.pressed) delay_counter.increment_btn.pressed = false;
+				if (arr_sz_counter.decrement_btn.pressed) arr_sz_counter.decrement_btn.pressed = false;
+				if (arr_sz_counter.increment_btn.pressed) arr_sz_counter.increment_btn.pressed = false;
+
+				for (uint16_t i = 0; i < N_ALGOS; ++i) {
 					if (buttons[i].pressed) buttons[i].pressed = false;
+				}
 			}
 			break;
 		case SDL_EVENT_KEY_DOWN:

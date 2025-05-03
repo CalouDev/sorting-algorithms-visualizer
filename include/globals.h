@@ -13,6 +13,8 @@
 #define MIN_DELAY 25
 #define MAX_DELAY 975
 #define STEP_DELAY 25
+#define MIN_ARR_SZ 2
+#define MAX_ARR_SZ 1000
 #define N_ALGOS 4U
 #define N_COUNTER 2U
 

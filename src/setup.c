@@ -62,7 +62,7 @@ bool initializeSDL(void) {
 
 	setupArr(&main_arr, DEFAULT_ARR_SIZE);
 
-	bar_width = 1000.0 / main_arr->size;
+	bar_width = (float)MAX_ARR_SZ / main_arr->size;
 
 	sorting_timer = SDL_GetTicks();
 	green_timer = SDL_GetTicks();
