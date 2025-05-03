@@ -18,6 +18,8 @@ char* str_sorting_interval = NULL;
 
 short green_passing_index = -1;
 
+int sine = 0;
+
 float mouse_x, mouse_y, bar_width, bar_height;
 
 uint64_t sorting_timer, green_timer;
@@ -29,6 +31,9 @@ bool element_hovered = false;
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
+SDL_AudioStream* stream = NULL;
+
+SDL_AudioSpec spec;
 
 SDL_MouseButtonFlags mouse_data;
 SDL_Cursor* hand_cursor = NULL;
@@ -48,12 +53,21 @@ bool initializeSDL(void) {
 	SDL_SetAppMetadataProperty("SDL_PROP_APP_METADATA_VERSION_STRING", "03/05/2025");
 	SDL_SetAppMetadataProperty("SDL_PROP_APP_METADATA_CREATOR_STRING", "CalouDev");
 	
-    if (!(SDL_Init(SDL_INIT_VIDEO) && SDL_Init(SDL_INIT_AUDIO) && TTF_Init())) return false;
+    if (!(SDL_Init(SDL_INIT_VIDEO) | SDL_Init(SDL_INIT_AUDIO) && TTF_Init())) return false;
 
     window = SDL_CreateWindow("Sorting Algorithms Visualizer", WIN_W, WIN_H, SDL_WINDOW_OPENGL);
     checkAllocation(window);
     renderer = SDL_CreateRenderer(window, NULL);
     checkAllocation(renderer);
+
+    spec.channels = 1;
+    spec.format = SDL_AUDIO_F32;
+    spec.freq = 20050;
+
+    stream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, NULL, NULL);
+    checkAllocation(stream);
+
+    SDL_ResumeAudioStreamDevice(stream);
 
     hand_cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
 	checkAllocation(hand_cursor);

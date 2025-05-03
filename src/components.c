@@ -87,7 +87,7 @@ void renderCounter(SDL_Renderer* renderer, TTF_TextEngine* text_engine, TTF_Font
 	SDL_RenderFillRect(renderer, &symbol_plus_vertical);
 
 	TTF_SetTextColor(ttf_val, CLR_BLACK.r, CLR_BLACK.g, CLR_BLACK.b, CLR_BLACK.a);
-	TTF_DrawRendererText(ttf_val, counter->main_box.x + counter->main_box.w / 2 - val_pix_w / 2, counter->main_box.y + counter->main_box.h / 2 - val_pix_h / 2);
+	TTF_DrawRendererText(ttf_val, counter->main_box.x + (counter->main_box.w - val_pix_w) / 2, counter->main_box.y + (counter->main_box.h - val_pix_h) / 2);
 
 	TTF_SetTextColor(ttf_title, CLR_WHITE.r, CLR_WHITE.g, CLR_WHITE.b, CLR_WHITE.a);
 	TTF_DrawRendererText(ttf_title, counter->main_box.x + counter->main_box.w / 2 - title_pix_w / 2, counter->main_box.y - title_pix_h - 5);

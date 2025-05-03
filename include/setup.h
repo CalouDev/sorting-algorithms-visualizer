@@ -5,6 +5,7 @@
 #include "globals.h"
 #include "rendering.h"
 #include "sorting_algorithms.h"
+#include "sound.h"
 #include "utils.h"
 
 extern SortData* main_arr;
@@ -16,9 +17,10 @@ extern Button buttons[N_ALGOS];
 
 extern Counter delay_counter;
 extern Counter arr_sz_counter;
-extern Counter counters[N_COUNTER];
 
 extern short green_passing_index;
+
+extern int sine;
 
 extern const char* str_sorting_functions[N_ALGOS];
 extern char *font_path, *algo_text_name, *str_delay_text, *str_sorting_interval;
@@ -35,11 +37,12 @@ extern uint16_t sorting_interval;
 
 extern SDL_Window* window;
 extern SDL_Renderer* renderer;
+extern SDL_AudioStream* stream;
+
+extern SDL_AudioSpec spec;
 
 extern SDL_MouseButtonFlags mouse_data;
 extern SDL_Cursor *hand_cursor, *default_cursor;
-
-extern const SDL_Vertex increment_delay_button_triangle_vertices[3], decrement_delay_button_triangle_vertices[3];
 
 extern TTF_TextEngine* text_engine;
 extern TTF_Font* font;
