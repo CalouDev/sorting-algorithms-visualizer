@@ -114,8 +114,8 @@ void initializeComponents(void) {
         createButton(&buttons[i], (SDL_FRect){1050.0f, 30.0f + 60.0f * i, 200.0f, 50.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY);
     }
 
-	createCounter(&delay_counter, DEFAULT_SORTING_INTERVAL, (SDL_FRect){1050.0f, 300.0f, 200.0f, 50.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY, CLR_DARK_GREY);
-	createCounter(&arr_sz_counter, main_arr->size, (SDL_FRect){1050.0f, 360.0f, 200.0f, 50.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY, CLR_DARK_GREY);
+	createCounter(&delay_counter, DEFAULT_SORTING_INTERVAL, "Delay (ms)", (SDL_FRect){1050.0f, 400.0f, 200.0f, 50.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY, CLR_DARK_GREY);
+	createCounter(&arr_sz_counter, main_arr->size, "Array size", (SDL_FRect){1050.0f, 520.0f, 200.0f, 50.0f}, CLR_WHITE, CLR_LIGHT_GREY, CLR_GREY, CLR_DARK_GREY);
 }
 
 void freeAll(void) {

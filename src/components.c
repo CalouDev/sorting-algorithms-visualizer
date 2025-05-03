@@ -22,11 +22,12 @@ void renderButton(SDL_Renderer* renderer, const Button* btn) {
 	SDL_RenderFillRect(renderer, &btn->box);
 }
 
-void createCounter(Counter* counter, size_t val, SDL_FRect box, SDL_Color bg_clr, SDL_Color default_clr, SDL_Color hovered_clr, SDL_Color pressed_clr) {
+void createCounter(Counter* counter, size_t val, const char* title, SDL_FRect box, SDL_Color bg_clr, SDL_Color default_clr, SDL_Color hovered_clr, SDL_Color pressed_clr) {
 	SDL_FRect left_box, right_box;
 
 	counter->main_box = box;
 	counter->value = val;
+	counter->title = title;
 	counter->bg_clr = bg_clr;
 
 
@@ -45,10 +46,10 @@ void createCounter(Counter* counter, size_t val, SDL_FRect box, SDL_Color bg_clr
 }
 
 void renderCounter(SDL_Renderer* renderer, TTF_TextEngine* text_engine, TTF_Font* font, const Counter* counter) {
-	int pix_w, pix_h;
+	int val_pix_w, val_pix_h, title_pix_w, title_pix_h;
 	char* text_value = NULL;
 	SDL_FRect symbol_minus, symbol_plus_horizontal, symbol_plus_vertical;
-	TTF_Text* ttf_text_val;
+	TTF_Text *ttf_val, *ttf_title;
 
 	text_value = SDL_malloc((intLen(counter->value) + 1));
 
@@ -68,8 +69,11 @@ void renderCounter(SDL_Renderer* renderer, TTF_TextEngine* text_engine, TTF_Font
 	symbol_plus_vertical.h = 0.5 * counter->increment_btn.box.h;
 
 	SDL_snprintf(text_value, (intLen(counter->value) + 1), "%lld", counter->value);
-	ttf_text_val = TTF_CreateText(text_engine, font, text_value, (intLen(counter->value) + 1));
-	TTF_GetTextSize(ttf_text_val, &pix_w, &pix_h);
+	ttf_val = TTF_CreateText(text_engine, font, text_value, (intLen(counter->value) + 1));
+	TTF_GetTextSize(ttf_val, &val_pix_w, &val_pix_h);
+
+	ttf_title = TTF_CreateText(text_engine, font, counter->title, (sizeof(counter->title) + 2));
+	TTF_GetTextSize(ttf_title, &title_pix_w, &title_pix_h);
 
 	SDL_SetRenderDrawColor(renderer, counter->bg_clr.r, counter->bg_clr.g, counter->bg_clr.b, counter->bg_clr.a);
 	SDL_RenderFillRect(renderer, &counter->main_box);
@@ -82,8 +86,11 @@ void renderCounter(SDL_Renderer* renderer, TTF_TextEngine* text_engine, TTF_Font
 	SDL_RenderFillRect(renderer, &symbol_plus_horizontal);
 	SDL_RenderFillRect(renderer, &symbol_plus_vertical);
 
-	TTF_SetTextColor(ttf_text_val, CLR_BLACK.r, CLR_BLACK.g, CLR_BLACK.b, CLR_BLACK.a);
-	TTF_DrawRendererText(ttf_text_val, counter->main_box.x + counter->main_box.w / 2 - pix_w / 2, counter->main_box.y + counter->main_box.h / 2 - pix_h / 2);
+	TTF_SetTextColor(ttf_val, CLR_BLACK.r, CLR_BLACK.g, CLR_BLACK.b, CLR_BLACK.a);
+	TTF_DrawRendererText(ttf_val, counter->main_box.x + counter->main_box.w / 2 - val_pix_w / 2, counter->main_box.y + counter->main_box.h / 2 - val_pix_h / 2);
+
+	TTF_SetTextColor(ttf_title, CLR_WHITE.r, CLR_WHITE.g, CLR_WHITE.b, CLR_WHITE.a);
+	TTF_DrawRendererText(ttf_title, counter->main_box.x + counter->main_box.w / 2 - title_pix_w / 2, counter->main_box.y - title_pix_h - 5);
 
 	SDL_free(text_value);
 }

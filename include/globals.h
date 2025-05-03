@@ -8,7 +8,7 @@
 #define WIN_W 1280U
 #define WIN_H 640U
 #define GREEN_EFFECT_INTERVAL 2U
-#define DEFAULT_ARR_SIZE 250
+#define DEFAULT_ARR_SIZE 500
 #define DEFAULT_SORTING_INTERVAL 75U
 #define MIN_DELAY 25
 #define MAX_DELAY 975
@@ -16,6 +16,7 @@
 #define MIN_ARR_SZ 2
 #define MAX_ARR_SZ 1000
 #define MAX_PX_ARR_H 600
+#define STEP_ARR_SZ 25
 #define N_ALGOS 4U
 #define N_COUNTER 2U
 

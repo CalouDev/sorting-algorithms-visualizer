@@ -60,7 +60,7 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 					sorting = false;
 					is_sorted = SORTING_CONTINUE;
 					green_passing_index = -1;
-					arr_sz_counter.value -= 1;
+					arr_sz_counter.value -= STEP_ARR_SZ;
 					setupArr(&main_arr, arr_sz_counter.value);
 					bar_width = (float)MAX_ARR_SZ / main_arr->size;
 					bar_height = (float)MAX_PX_ARR_H / main_arr->size;
@@ -69,7 +69,7 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 					sorting = false;
 					is_sorted = SORTING_CONTINUE;
 					green_passing_index = -1;
-					arr_sz_counter.value += 1;
+					arr_sz_counter.value += STEP_ARR_SZ;
 					setupArr(&main_arr, arr_sz_counter.value);
 					bar_width = (float)MAX_ARR_SZ / main_arr->size;
 					bar_height = (float)MAX_PX_ARR_H / main_arr->size;
