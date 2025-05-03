@@ -23,7 +23,7 @@ extern short green_passing_index;
 extern const char* str_sorting_functions[N_ALGOS];
 extern char *font_path, *algo_text_name, *str_delay_text, *str_sorting_interval;
 
-extern float mouse_x, mouse_y, bar_width;
+extern float mouse_x, mouse_y, bar_width, bar_height;
 
 extern bool sorting;
 extern bool element_hovered;

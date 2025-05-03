@@ -18,7 +18,7 @@ char* str_sorting_interval = NULL;
 
 short green_passing_index = -1;
 
-float mouse_x, mouse_y, bar_width;
+float mouse_x, mouse_y, bar_width, bar_height;
 
 uint64_t sorting_timer, green_timer;
 uint16_t algo_choosen = 0;
@@ -45,7 +45,7 @@ bool initializeSDL(void) {
 
 	SDL_SetAppMetadata("Sorting Algorithms Visualizer", "0.7", NULL);
 	SDL_SetAppMetadataProperty("SDL_PROP_APP_METADATA_NAME_STRING", "Sorting Algorithms Visualizer");
-	SDL_SetAppMetadataProperty("SDL_PROP_APP_METADATA_VERSION_STRING", "13/04/2025");
+	SDL_SetAppMetadataProperty("SDL_PROP_APP_METADATA_VERSION_STRING", "03/05/2025");
 	SDL_SetAppMetadataProperty("SDL_PROP_APP_METADATA_CREATOR_STRING", "CalouDev");
 	
     if (!(SDL_Init(SDL_INIT_VIDEO) && SDL_Init(SDL_INIT_AUDIO) && TTF_Init())) return false;
@@ -63,6 +63,7 @@ bool initializeSDL(void) {
 	setupArr(&main_arr, DEFAULT_ARR_SIZE);
 
 	bar_width = (float)MAX_ARR_SZ / main_arr->size;
+	bar_height = (float)MAX_PX_ARR_H / main_arr->size;
 
 	sorting_timer = SDL_GetTicks();
 	green_timer = SDL_GetTicks();

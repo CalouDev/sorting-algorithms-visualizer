@@ -63,6 +63,7 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 					arr_sz_counter.value -= 1;
 					setupArr(&main_arr, arr_sz_counter.value);
 					bar_width = (float)MAX_ARR_SZ / main_arr->size;
+					bar_height = (float)MAX_PX_ARR_H / main_arr->size;
 				} else if (arr_sz_counter.increment_btn.hovered && main_arr->size < MAX_ARR_SZ) {
 					arr_sz_counter.increment_btn.pressed = true;
 					sorting = false;
@@ -71,6 +72,7 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 					arr_sz_counter.value += 1;
 					setupArr(&main_arr, arr_sz_counter.value);
 					bar_width = (float)MAX_ARR_SZ / main_arr->size;
+					bar_height = (float)MAX_PX_ARR_H / main_arr->size;
 				}
 
 				for (uint16_t i = 0; i < N_ALGOS; ++i) {

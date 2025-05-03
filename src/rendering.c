@@ -24,9 +24,11 @@ void renderComponents(void) {
 
 void renderAndProcessSortingEffect(void) {
 	for (uint16_t i = green_passing_index + 1; i < main_arr->size; ++i) {
+		float height;
+		height = SDL_abs(main_arr->arr[i]) * bar_height;
 		if (main_arr->arr[i] < 0) SDL_SetRenderDrawColor(renderer, CLR_RED.r, CLR_RED.g, CLR_RED.b, CLR_RED.a);
 		else SDL_SetRenderDrawColor(renderer, CLR_WHITE.r, CLR_WHITE.g, CLR_WHITE.b, CLR_WHITE.a);
-		SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * bar_width, WIN_H - SDL_abs(main_arr->arr[i]) * 2, bar_width, WIN_H});
+		SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * bar_width, WIN_H - height, bar_width, height});
 	}
 
 	if (sorting && SDL_GetTicks() > (sorting_timer + sorting_interval)) {
@@ -45,12 +47,16 @@ void renderAndProcessSortingEffect(void) {
 
 void renderGreenEffect(void) {
 	if (green_passing_index >= 0) {
+		float height;
 		SDL_SetRenderDrawColor(renderer, CLR_GREEN.r, CLR_GREEN.g, CLR_GREEN.b, CLR_GREEN.a);
-		for (short i = 0; i <= green_passing_index - 1; ++i)  SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * bar_width, WIN_H - SDL_abs(main_arr->arr[i]) * 2, bar_width, SDL_abs(main_arr->arr[i]) * 2});
+		for (short i = 0; i <= green_passing_index - 1; ++i) {
+			height = SDL_abs(main_arr->arr[i]) * bar_height;
+			SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * bar_width, WIN_H - height, bar_width, height});
+		}
 
 		if (green_passing_index <= main_arr->size-1) {
 			SDL_SetRenderDrawColor(renderer, CLR_RED.r, CLR_RED.g, CLR_RED.b, CLR_RED.a);
-			SDL_RenderFillRect(renderer, &(SDL_FRect){1 + green_passing_index * bar_width, WIN_H - SDL_abs(main_arr->arr[green_passing_index]) * 2, bar_width, WIN_H});
+			SDL_RenderFillRect(renderer, &(SDL_FRect){1 + green_passing_index * bar_width, WIN_H - SDL_abs(main_arr->arr[green_passing_index]) * bar_height, bar_width, SDL_abs(main_arr->arr[green_passing_index]) * bar_height});
 		}
 	}
 }
