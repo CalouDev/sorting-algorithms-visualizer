@@ -9,7 +9,6 @@ Button buttons[N_ALGOS];
 
 Counter delay_counter;
 Counter arr_sz_counter;
-//Counter counters[N_COUNTER];
 
 const char* str_sorting_functions[N_ALGOS] = {"Insertion Sort", "Selection Sort", "Bubble Sort", "Merge Sort"};
 char* font_path = NULL;
@@ -19,7 +18,7 @@ char* str_sorting_interval = NULL;
 
 short green_passing_index = -1;
 
-float mouse_x, mouse_y;
+float mouse_x, mouse_y, bar_width;
 
 uint64_t sorting_timer, green_timer;
 uint16_t algo_choosen = 0;
@@ -62,6 +61,8 @@ bool initializeSDL(void) {
 	checkAllocation(default_cursor);
 
 	setupArr(&main_arr, DEFAULT_ARR_SIZE);
+
+	bar_width = 1000.0 / main_arr->size;
 
 	sorting_timer = SDL_GetTicks();
 	green_timer = SDL_GetTicks();

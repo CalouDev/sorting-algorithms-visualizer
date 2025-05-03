@@ -26,16 +26,14 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 		case SDL_EVENT_MOUSE_MOTION:
 			element_hovered = false;
 
-			/*for (uint16_t i = 0; i < N_COUNTER; ++i) {
-				counters[i].decrement_btn.hovered = isFRectHovered(counters[i].decrement_btn.box, event->motion.x, event->motion.y);
-				counters[i].increment_btn.hovered = isFRectHovered(counters[i].increment_btn.box, event->motion.x, event->motion.y);
-				if (counters[i].decrement_btn.hovered || counters[i].increment_btn.hovered) element_hovered = true;
-			}*/
-
 			delay_counter.decrement_btn.hovered = isFRectHovered(delay_counter.decrement_btn.box, event->motion.x, event->motion.y);
 			delay_counter.increment_btn.hovered = isFRectHovered(delay_counter.increment_btn.box, event->motion.x, event->motion.y);
 			arr_sz_counter.decrement_btn.hovered = isFRectHovered(arr_sz_counter.decrement_btn.box, event->motion.x, event->motion.y);
 			arr_sz_counter.increment_btn.hovered = isFRectHovered(arr_sz_counter.increment_btn.box, event->motion.x, event->motion.y);
+
+			if (delay_counter.decrement_btn.hovered || delay_counter.increment_btn.hovered || arr_sz_counter.decrement_btn.hovered || arr_sz_counter.increment_btn.hovered) {
+				element_hovered = true;
+			}
 
 			for (uint16_t i = 0; i < N_ALGOS; ++i) {
 				buttons[i].hovered = isFRectHovered(buttons[i].box, event->motion.x, event->motion.y); 
@@ -47,16 +45,6 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 
 			if (event->button.button == SDL_BUTTON_LEFT) {
-				/*for (uint16_t i = 0; i < N_COUNTER; ++i) {
-					if (sorting_interval > MIN_DELAY && counters[i].decrement_btn.hovered) {
-						sorting_interval -= STEP_DELAY;
-						counters[i].value -= STEP_DELAY;
-					} else if (sorting_interval < MAX_DELAY && counters[i].increment_btn.hovered) {
-						sorting_interval += STEP_DELAY;
-						counters[i].value += STEP_DELAY;
-					}
-				}*/
-
 				if (delay_counter.decrement_btn.hovered && sorting_interval > MIN_DELAY) {
 					sorting_interval -= STEP_DELAY;
 					delay_counter.value -= STEP_DELAY;
@@ -68,9 +56,11 @@ SDL_AppResult SDL_AppEvent(void *appstate __attribute__((unused)), SDL_Event *ev
 				if (arr_sz_counter.decrement_btn.hovered && sorting_interval > MIN_DELAY) {
 					arr_sz_counter.value -= 1;
 					setupArr(&main_arr, arr_sz_counter.value);
+					bar_width = 1000.0 / main_arr->size;
 				} else if (arr_sz_counter.increment_btn.hovered && sorting_interval < MAX_DELAY) {
 					arr_sz_counter.value += 1;
 					setupArr(&main_arr, arr_sz_counter.value);
+					bar_width = 1000.0 / main_arr->size;
 				}
 
 				for (uint16_t i = 0; i < N_ALGOS; ++i) {

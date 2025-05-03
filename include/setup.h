@@ -13,7 +13,6 @@ extern SortingState is_sorted;
 extern SortingState (*sorting_functions[N_ALGOS])(SortData*);
 
 extern Button buttons[N_ALGOS];
-//extern Button increment_delay_button, decrement_delay_button;
 
 extern Counter delay_counter;
 extern Counter arr_sz_counter;
@@ -24,7 +23,7 @@ extern short green_passing_index;
 extern const char* str_sorting_functions[N_ALGOS];
 extern char *font_path, *algo_text_name, *str_delay_text, *str_sorting_interval;
 
-extern float mouse_x, mouse_y;
+extern float mouse_x, mouse_y, bar_width;
 
 extern bool sorting;
 extern bool element_hovered;

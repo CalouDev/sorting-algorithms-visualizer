@@ -18,10 +18,6 @@ void renderComponents(void) {
 		renderButton(renderer, &buttons[i]);
 	}
 
-	/*for (uint16_t i = 0; i < N_COUNTER; ++i) {
-		renderCounter(renderer, text_engine, font, &counters[i]);
-	}*/
-
 	renderCounter(renderer, text_engine, font, &delay_counter);
 	renderCounter(renderer, text_engine, font, &arr_sz_counter);
 }
@@ -30,7 +26,7 @@ void renderAndProcessSortingEffect(void) {
 	for (uint16_t i = green_passing_index + 1; i < main_arr->size; ++i) {
 		if (main_arr->arr[i] < 0) SDL_SetRenderDrawColor(renderer, CLR_RED.r, CLR_RED.g, CLR_RED.b, CLR_RED.a);
 		else SDL_SetRenderDrawColor(renderer, CLR_WHITE.r, CLR_WHITE.g, CLR_WHITE.b, CLR_WHITE.a);
-		SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - SDL_abs(main_arr->arr[i]) * 2, 4, WIN_H});
+		SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * bar_width, WIN_H - SDL_abs(main_arr->arr[i]) * 2, bar_width, WIN_H});
 	}
 
 	if (sorting && SDL_GetTicks() > (sorting_timer + sorting_interval)) {
@@ -50,11 +46,11 @@ void renderAndProcessSortingEffect(void) {
 void renderGreenEffect(void) {
 	if (green_passing_index >= 0) {
 		SDL_SetRenderDrawColor(renderer, CLR_GREEN.r, CLR_GREEN.g, CLR_GREEN.b, CLR_GREEN.a);
-		for (short i = 0; i <= green_passing_index - 1; ++i)  SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * 4, WIN_H - SDL_abs(main_arr->arr[i]) * 2, 4, SDL_abs(main_arr->arr[i]) * 2});
+		for (short i = 0; i <= green_passing_index - 1; ++i)  SDL_RenderFillRect(renderer, &(SDL_FRect){1 + i * bar_width, WIN_H - SDL_abs(main_arr->arr[i]) * 2, bar_width, SDL_abs(main_arr->arr[i]) * 2});
 
 		if (green_passing_index <= main_arr->size-1) {
 			SDL_SetRenderDrawColor(renderer, CLR_RED.r, CLR_RED.g, CLR_RED.b, CLR_RED.a);
-			SDL_RenderFillRect(renderer, &(SDL_FRect){1 + green_passing_index * 4, WIN_H - SDL_abs(main_arr->arr[green_passing_index]) * 2, 4, WIN_H});
+			SDL_RenderFillRect(renderer, &(SDL_FRect){1 + green_passing_index * bar_width, WIN_H - SDL_abs(main_arr->arr[green_passing_index]) * 2, bar_width, WIN_H});
 		}
 	}
 }
