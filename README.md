@@ -1,3 +1,5 @@
+# ⚠️ This repo is no longer in development at the moment, and it contains messy code. I might take up the project in the future.
+
 <h1 align="center">Sorting Algorithms Visualizer v1</h1>
 
 ## Project Description
